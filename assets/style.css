@@ -1,0 +1,369 @@
+/* ===================================================
+   からくり図鑑 — 共通スタイルシート
+   使い方: 各エピソードHTMLの<head>内で読み込む
+   <link rel="stylesheet" href="../assets/style.css">
+   =================================================== */
+
+/* --- フォント読み込み --- */
+@import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;700;900&display=swap');
+
+/* --- 全体のリセットと基本設定 --- */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'M PLUS Rounded 1c', sans-serif;
+    background-color: #fdf4ff;
+    color: #475569;
+    overflow-x: hidden;
+    padding: 2rem 1rem 5rem;
+}
+
+/* --- レイアウト --- */
+.page-wrapper {
+    max-width: 56rem; /* 896px */
+    margin: 0 auto;
+}
+
+/* --- ページタイトル --- */
+.page-title {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.page-title h1 {
+    font-size: clamp(1.8rem, 5vw, 3rem);
+    font-weight: 900;
+    color: #0ea5e9;
+    line-height: 1.3;
+    text-shadow: 2px 2px 0px #fff, 4px 4px 0px #bae6fd;
+    margin-bottom: 0.75rem;
+}
+
+.page-title .subtitle-badge {
+    display: inline-block;
+    background: #fff;
+    border: 2px solid #e0f2fe;
+    border-radius: 9999px;
+    padding: 0.4rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #475569;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+/* --- 3Dビューアー本体を包むカード --- */
+.viewer-card {
+    background: #fff;
+    border: 4px solid #f1f5f9;
+    border-radius: 1.5rem;
+    padding: 1rem 1rem 0.5rem;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+    margin-bottom: 2rem;
+}
+
+/* --- コントロールバー（ボタン列） --- */
+.control-bar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    background: #f8fafc;
+    border-radius: 1rem;
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.75rem;
+}
+
+/* --- 3Dキャンバス --- */
+#canvas-container {
+    width: 100%;
+    height: 480px;
+    background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%);
+    border-radius: 1.25rem;
+    overflow: hidden;
+    position: relative;
+    cursor: grab;
+    border: 5px solid #bae6fd;
+    box-shadow: 0 8px 20px rgba(56,189,248,0.25), inset 0 0 16px rgba(255,255,255,0.7);
+}
+#canvas-container:active { cursor: grabbing; }
+
+/* --- ローディング表示 --- */
+#loading {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f0f9ff;
+    z-index: 10;
+    font-weight: 700;
+    color: #0ea5e9;
+    font-size: 1.2rem;
+}
+
+/* --- キャンバス下のヒントテキスト --- */
+.canvas-hints {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #38bdf8;
+}
+.canvas-hints span {
+    background: #fff;
+    padding: 0.2rem 0.75rem;
+    border-radius: 9999px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+
+/* --- ポップボタン --- */
+.btn-pop {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: inherit;
+    font-weight: 900;
+    font-size: 1rem;
+    padding: 0.65rem 1.25rem;
+    border: 2px solid #fff;
+    border-radius: 1rem;
+    cursor: pointer;
+    transition: all 0.1s;
+    box-shadow: 0 5px 0 rgba(0,0,0,0.12);
+    user-select: none;
+}
+.btn-pop:active {
+    transform: translateY(5px);
+    box-shadow: none;
+}
+.btn-pop.btn-auto  { background: #34d399; color: #fff; }
+.btn-pop.btn-auto:hover  { background: #6ee7b7; }
+.btn-pop.btn-manual { background: #fbbf24; color: #fff; }
+.btn-pop.btn-manual:hover { background: #fde68a; }
+.btn-pop.dimmed { opacity: 0.55; }
+
+/* --- 手動スライダーエリア --- */
+.manual-controls {
+    flex-grow: 1;
+    width: 100%;
+}
+.manual-controls .slider-label {
+    text-align: center;
+    font-weight: 700;
+    color: #f43f5e;
+    font-size: 0.9rem;
+    margin-bottom: 0.4rem;
+}
+
+/* --- スライダー（つまみ） --- */
+input[type=range] {
+    -webkit-appearance: none;
+    width: 100%;
+    background: transparent;
+}
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 34px;
+    width: 34px;
+    border-radius: 50%;
+    background: #f43f5e;
+    cursor: pointer;
+    margin-top: -11px;
+    box-shadow: 0 4px 0 #be123c;
+    border: 4px solid #fff;
+    transition: transform 0.1s;
+}
+input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.1); }
+input[type=range]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 10px;
+    background: #e2e8f0;
+    border-radius: 5px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.08);
+}
+
+/* --- 解説グリッド（2カラム） --- */
+.info-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+@media (min-width: 640px) {
+    .info-grid { grid-template-columns: 1fr 1fr; }
+}
+
+/* --- ふきだしカード --- */
+.speech-bubble {
+    position: relative;
+    background: #fff;
+    border: 4px solid #fcd34d;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+}
+.speech-bubble::after {
+    content: '';
+    position: absolute;
+    top: 100%; left: 28px;
+    border-width: 14px;
+    border-style: solid;
+    border-color: #fcd34d transparent transparent transparent;
+}
+.speech-bubble::before {
+    content: '';
+    position: absolute;
+    top: 100%; left: 32px;
+    border-width: 10px;
+    border-style: solid;
+    border-color: #fff transparent transparent transparent;
+    z-index: 1;
+}
+.speech-bubble h2 {
+    font-size: 1.3rem;
+    font-weight: 900;
+    color: #f43f5e;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+.speech-bubble p {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #334155;
+    line-height: 1.8;
+}
+
+/* --- チェックリストカード（青系） --- */
+.checklist-card {
+    background: #38bdf8;
+    border: 4px solid #7dd3fc;
+    border-radius: 1.5rem;
+    padding: 1.5rem;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(56,189,248,0.3);
+}
+.checklist-card .deco-icon {
+    position: absolute;
+    right: -0.5rem;
+    bottom: -0.5rem;
+    font-size: 5rem;
+    opacity: 0.15;
+    pointer-events: none;
+}
+.checklist-card h3 {
+    font-size: 1.2rem;
+    font-weight: 900;
+    margin-bottom: 1rem;
+    position: relative;
+}
+.checklist-card ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    position: relative;
+}
+.checklist-card li {
+    display: flex;
+    gap: 0.6rem;
+    align-items: flex-start;
+    font-size: 0.95rem;
+    font-weight: 700;
+    line-height: 1.5;
+}
+.checklist-card li .num {
+    background: #fff;
+    color: #0ea5e9;
+    border-radius: 50%;
+    width: 1.6rem;
+    height: 1.6rem;
+    min-width: 1.6rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 900;
+}
+
+/* --- 大人向けコラム（折りたたみ） --- */
+.adult-column {
+    background: #fff;
+    border: 2px solid #e2e8f0;
+    border-radius: 1rem;
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+.adult-column summary {
+    cursor: pointer;
+    padding: 0.85rem 1.25rem;
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: #64748b;
+    background: #f8fafc;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    user-select: none;
+}
+.adult-column summary::-webkit-details-marker { display: none; }
+.adult-column summary .toggle-icon {
+    margin-left: auto;
+    font-size: 1rem;
+    transition: transform 0.2s;
+}
+details[open] .toggle-icon { transform: rotate(180deg); }
+.adult-column .column-body {
+    padding: 1.25rem;
+    font-size: 0.9rem;
+    line-height: 1.8;
+    color: #475569;
+    border-top: 1px solid #e2e8f0;
+}
+.adult-column .column-body h4 {
+    font-weight: 900;
+    color: #334155;
+    margin-bottom: 0.5rem;
+}
+.adult-column .column-body p + p { margin-top: 0.75rem; }
+
+/* --- ナビゲーション（前後の回へ） --- */
+.episode-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 2px dashed #e2e8f0;
+}
+.episode-nav a {
+    text-decoration: none;
+    font-weight: 900;
+    font-size: 0.9rem;
+    color: #0ea5e9;
+    background: #fff;
+    border: 2px solid #bae6fd;
+    border-radius: 0.75rem;
+    padding: 0.6rem 1rem;
+    transition: background 0.15s;
+}
+.episode-nav a:hover { background: #e0f2fe; }
+.episode-nav .nav-next-teaser {
+    font-size: 0.8rem;
+    color: #94a3b8;
+    font-weight: 700;
+    text-align: center;
+    flex: 1;
+}

@@ -1,0 +1,70 @@
+{
+  "episodes": [
+    {
+      "id": 1,
+      "slug": "ep01",
+      "title": "メリーゴーランドのひみつ",
+      "mechanism": "カムきこう",
+      "emoji": "🎠",
+      "color": "#38bdf8",
+      "description": "なみなみのレールを 車輪が走ることで、お馬さんが上下にうごく！",
+      "status": "published",
+      "file": "episodes/ep01.html"
+    },
+    {
+      "id": 2,
+      "slug": "ep02",
+      "title": "じどうドアのひみつ",
+      "mechanism": "センサー＋リンクきこう",
+      "emoji": "🚪",
+      "color": "#34d399",
+      "description": "近づくと なぜドアが ひらくの？センサーとリンクのひみつ！",
+      "status": "coming_soon",
+      "file": "episodes/ep02.html"
+    },
+    {
+      "id": 3,
+      "slug": "ep03",
+      "title": "じてんしゃのギアのひみつ",
+      "mechanism": "はぐるまきこう",
+      "emoji": "⚙️",
+      "color": "#f97316",
+      "description": "ペダルを こぐと なぜ スピードが かわるの？ギアのひみつ！",
+      "status": "coming_soon",
+      "file": "episodes/ep03.html"
+    },
+    {
+      "id": 4,
+      "slug": "ep04",
+      "title": "エスカレーターのひみつ",
+      "mechanism": "むたんチェーン",
+      "emoji": "🏗️",
+      "color": "#8b5cf6",
+      "description": "どうして ステップが かたむかずに まっすぐなの？",
+      "status": "coming_soon",
+      "file": "episodes/ep04.html"
+    },
+    {
+      "id": 5,
+      "slug": "ep05",
+      "title": "かさのひみつ",
+      "mechanism": "パンタグラフきこう",
+      "emoji": "🌂",
+      "color": "#f43f5e",
+      "description": "小さくたたんだかさが ぱっとひらく！骨組みのひみつ！",
+      "status": "coming_soon",
+      "file": "episodes/ep05.html"
+    },
+    {
+      "id": 6,
+      "slug": "ep06",
+      "title": "かぎのしくみ",
+      "mechanism": "ピンタンブラーじょう",
+      "emoji": "🔒",
+      "color": "#fbbf24",
+      "description": "ぴったりのかぎ だけが あくのは なぜ？ピンのしくみ！",
+      "status": "coming_soon",
+      "file": "episodes/ep06.html"
+    }
+  ]
+}
