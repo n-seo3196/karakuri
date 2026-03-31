@@ -150,10 +150,10 @@ fetch('./data/episodes.json')
                         <p class="card-title">${ep.title}</p>
                     </div>
                 </div>
-                <span class="card-mechanism">🔧 ${ep.mechanism}</span>
-                <p class="card-desc">${ep.description}</p>
+                <span class="card-mechanism">⚙️ ${ep.mechanism}</span>
+                <p class="card-desc">❓ ${ep.question}</p>
                 <p class="card-status ${isPublished ? 'published' : 'coming-soon'}">
-                    ${isPublished ? '✅ 読める！' : '🔜 もうすぐ…'}
+                    ${isPublished ? '✅ 読める！' : '🔜 準備中'}
                 </p>
             </a>`;
         }).join('');
@@ -167,11 +167,11 @@ fetch('./data/episodes.json')
                     <span class="card-emoji">🎠</span>
                     <div>
                         <p class="card-num">第 1 回</p>
-                        <p class="card-title">メリーゴーランドのひみつ</p>
+                        <p class="card-title">メリーゴーランドの構造</p>
                     </div>
                 </div>
-                <span class="card-mechanism">🔧 カムきこう</span>
-                <p class="card-desc">なみなみのレールを 車輪が走ることで、お馬さんが上下にうごく！</p>
+                <span class="card-mechanism">⚙️ カム機構</span>
+                <p class="card-desc">❓ なぜ上下に動くの？</p>
                 <p class="card-status published">✅ 読める！</p>
             </a>
         `;
