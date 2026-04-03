@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,361 +13,380 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 </head>
+
 <body>
-<div class="page-wrapper">
+    <div class="page-wrapper">
 
-    <!-- ========== ヘッダー ========== -->
-    <div class="page-title">
-        <h1>3Dからくり図鑑 🎠</h1>
-        <p class="subtitle-badge">第1回：メリーゴーランドの<ruby>構造<rt>こうぞう</rt></ruby>（カム<ruby>機構<rt>きこう</rt></ruby>）</p>
-    </div>
+        <!-- ========== ヘッダー ========== -->
+        <div class="page-title">
+            <h1>3Dからくり図鑑 🎠</h1>
+            <p class="subtitle-badge">第1回：メリーゴーランドの<ruby>構造<rt>こうぞう</rt></ruby>（カム<ruby>機構<rt>きこう</rt></ruby>）</p>
+        </div>
 
-    <!-- ========== 3Dビューアーカード ========== -->
-    <div class="viewer-card">
+        <!-- ========== 3Dビューアーカード ========== -->
+        <div class="viewer-card">
 
-        <!-- コントロールバー -->
-        <div class="control-bar">
-            <div style="display:flex; gap:0.75rem;">
-                <button id="btn-auto" class="btn-pop btn-auto">
-                    <span>▶️</span> 自動回転
-                </button>
-                <button id="btn-manual" class="btn-pop btn-manual dimmed">
-                    <span>🖐️</span> 手動操作
-                </button>
+            <!-- コントロールバー -->
+            <div class="control-bar">
+                <div style="display:flex; gap:0.75rem;">
+                    <button id="btn-auto" class="btn-pop btn-auto">
+                        <span>▶️</span> 自動回転
+                    </button>
+                    <button id="btn-manual" class="btn-pop btn-manual dimmed">
+                        <span>🖐️</span> 手動操作
+                    </button>
+                </div>
+
+                <div class="manual-controls" id="manual-controls" style="display:none;">
+                    <p class="slider-label">スライダーで動きを調整</p>
+                    <input type="range" id="rotationSlider" min="0" max="360" value="0">
+                </div>
             </div>
 
-            <div class="manual-controls" id="manual-controls" style="display:none;">
-                <p class="slider-label">スライダーで角度を調整</p>
-                <input type="range" id="rotationSlider" min="0" max="360" value="0">
+            <!-- キャンバス -->
+            <div id="canvas-container">
+                <div id="loading">読み込み中...</div>
+            </div>
+
+            <!-- ヒント -->
+            <div class="canvas-hints">
+                <span>👆 ドラッグで視点を回転</span>
+                <span>🔍 スクロールでズーム</span>
             </div>
         </div>
 
-        <!-- キャンバス -->
-        <div id="canvas-container">
-            <div id="loading">読み込み中...</div>
+        <!-- ========== 解説グリッド ========== -->
+        <div class="info-grid">
+
+            <!-- ふきだし：なぜ動くの？ -->
+            <div class="speech-bubble">
+                <h2><span>🔍</span> どうして上下に動くの？</h2>
+                <p>
+                    ライダー（<ruby>乗り物<rt>のりもの</rt></ruby>）の底には<ruby>車輪<rt>しゃりん</rt></ruby>がついていて、赤い<span
+                        style="color:#f43f5e; font-weight:900;">「<ruby>凹凸<rt>おうとつ</rt>
+                        </ruby>のあるレール」</span>の上を転がっている。<br><br>
+                    レールが高い<ruby>位置<rt>いち</rt></ruby>にくると<ruby>車輪<rt>しゃりん</rt></ruby>が押し上げられ、低くなると下がる。<br>
+                    <ruby>回転<rt>かいてん</rt></ruby><ruby>運動<rt>うんどう</rt></ruby>を上下<ruby>運動<rt>うんどう</rt></ruby>に<ruby>変換<rt>
+                            へんかん</rt></ruby>するこの仕組みを<strong>「カム<ruby>機構<rt>きこう</rt></ruby>」</strong>という。<br><br>
+                    <ruby>車輪<rt>しゃりん</rt></ruby>がレールの<ruby>傾<rt>かたむ</rt></ruby>きに<ruby>沿<rt>そ</rt></ruby>って<ruby>正確<rt>
+                            せいかく</rt></ruby>に転がっているか、<ruby>角度<rt>かくど</rt></ruby>を変えながら<ruby>確認<rt>かくにん</rt></ruby>してみよう。
+                </p>
+            </div>
+
+            <!-- チェックリスト：観察ポイント -->
+            <div class="checklist-card">
+                <span class="deco-icon">⚙️</span>
+                <h3><ruby>観察<rt>かんさつ</rt></ruby>ポイント</h3>
+                <ul>
+                    <li>
+                        <span class="num">1</span>
+                        <span>下から見上げて、黄色い<ruby>車輪<rt>しゃりん</rt></ruby>がレールの<ruby>凹凸<rt>おうとつ</rt></ruby>に<ruby>沿<rt>そ</rt>
+                            </ruby>って転がる様子を<ruby>確認<rt>かくにん</rt></ruby>しよう。</span>
+                    </li>
+                    <li>
+                        <span class="num">2</span>
+                        <span><ruby>手動操作<rt>しゅどうそうさ</rt></ruby>にして、ゆっくり動かしてみよう。ライダーが最も高くなるのはレールのどの<ruby>位置<rt>いち</rt>
+                            </ruby>？</span>
+                    </li>
+                    <li>
+                        <span class="num">3</span>
+                        <span>3つのライダーが同時に<ruby>最高点<rt>さいこうてん</rt></ruby>に達することはある？ レールの<ruby>凹凸<rt>おうとつ</rt>
+                            </ruby>の数と<ruby>照<rt>て</rt></ruby>らし合わせて考えてみよう。</span>
+                    </li>
+                </ul>
+            </div>
         </div>
 
-        <!-- ヒント -->
-        <div class="canvas-hints">
-            <span>👆 ドラッグで視点を回転</span>
-            <span>🔍 スクロールでズーム</span>
-        </div>
-    </div>
+        <!-- ========== 大人向けコラム（折りたたみ） ========== -->
+        <details class="adult-column">
+            <summary>
+                <span>🔧</span>
+                <span>もっと<ruby>技術<rt>ぎじゅつ</rt></ruby><ruby>解説<rt>かいせつ</rt></ruby></span>
+                <span class="toggle-icon">▼</span>
+            </summary>
+            <div class="column-body">
+                <h4>カム<ruby>機構<rt>きこう</rt></ruby>（Cam Mechanism）とは</h4>
+                <p>
+                    <ruby>回転<rt>かいてん</rt></ruby><ruby>運動<rt>うんどう</rt></ruby>を上下（<ruby>往復<rt>おうふく</rt></ruby>）<ruby>運動<rt>うんどう</rt></ruby>に<ruby>変換<rt>へんかん</rt></ruby>する<ruby>機構<rt>きこう</rt></ruby>です。このモデルでは、<ruby>円周<rt>えんしゅう</rt></ruby>上に波のような山と谷をつけたレールの上を車輪が転がることで、乗り物が上下に動く仕組みを<ruby>表現<rt>ひょうげん</rt></ruby>しています。
+                </p>
 
-    <!-- ========== 解説グリッド ========== -->
-    <div class="info-grid">
+                <h4>どんなところで使われているの？</h4>
+                <p>
+                    身近なところでは<strong>自動車のエンジン（バルブの開閉）</strong>に欠かせない仕組みです。また、<strong>からくりおもちゃ</strong>が動く仕掛けや、<strong>ミシン</strong>の針を規則正しく上下させる部分などにも使われています。
+                </p>
 
-        <!-- ふきだし：なぜ動くの？ -->
-        <div class="speech-bubble">
-            <h2><span>🔍</span> どうして上下に動くの？</h2>
-            <p>
-                ライダー（<ruby>乗り物<rt>のりもの</rt></ruby>）の底には<ruby>車輪<rt>しゃりん</rt></ruby>がついていて、赤い<span style="color:#f43f5e; font-weight:900;">「<ruby>凹凸<rt>おうとつ</rt></ruby>のあるレール」</span>の上を転がっている。<br><br>
-                レールが高い<ruby>位置<rt>いち</rt></ruby>にくると<ruby>車輪<rt>しゃりん</rt></ruby>が押し上げられ、低くなると下がる。<br>
-                <ruby>回転<rt>かいてん</rt></ruby><ruby>運動<rt>うんどう</rt></ruby>を上下<ruby>運動<rt>うんどう</rt></ruby>に<ruby>変換<rt>へんかん</rt></ruby>するこの仕組みを<strong>「カム<ruby>機構<rt>きこう</rt></ruby>」</strong>という。<br><br>
-                <ruby>車輪<rt>しゃりん</rt></ruby>がレールの<ruby>傾<rt>かたむ</rt></ruby>きに<ruby>沿<rt>そ</rt></ruby>って<ruby>正確<rt>せいかく</rt></ruby>に転がっているか、<ruby>角度<rt>かくど</rt></ruby>を変えながら<ruby>確認<rt>かくにん</rt></ruby>してみよう。
-            </p>
-        </div>
+                <h4>上下に動く距離の<ruby>計算式<rt>けいさんしき</rt></ruby></h4>
+                <div style="background:#fefce8; padding: 1rem; border: 2px solid #fde047; border-radius: 8px; margin-bottom: 1.5rem;">
+                    <strong>カムの山の高さ（中心からのズレ） × 2 ＝ <span style="color:#ef4444;">１回で上下に動く距離</span></strong>
+                </div>
 
-        <!-- チェックリスト：観察ポイント -->
-        <div class="checklist-card">
-            <span class="deco-icon">⚙️</span>
-            <h3><ruby>観察<rt>かんさつ</rt></ruby>ポイント</h3>
-            <ul>
-                <li>
-                    <span class="num">1</span>
-                    <span>下から見上げて、黄色い<ruby>車輪<rt>しゃりん</rt></ruby>がレールの<ruby>凹凸<rt>おうとつ</rt></ruby>に<ruby>沿<rt>そ</rt></ruby>って転がる様子を<ruby>確認<rt>かくにん</rt></ruby>しよう。</span>
-                </li>
-                <li>
-                    <span class="num">2</span>
-                    <span><ruby>手動操作<rt>しゅどうそうさ</rt></ruby>にして、ゆっくり動かしてみよう。ライダーが最も高くなるのはレールのどの<ruby>位置<rt>いち</rt></ruby>？</span>
-                </li>
-                <li>
-                    <span class="num">3</span>
-                    <span>3つのライダーが同時に<ruby>最高点<rt>さいこうてん</rt></ruby>に達することはある？ レールの<ruby>凹凸<rt>おうとつ</rt></ruby>の数と<ruby>照<rt>て</rt></ruby>らし合わせて考えてみよう。</span>
-                </li>
-            </ul>
-        </div>
-    </div>
+                <h4>このモデルでの<ruby>計算<rt>けいさん</rt></ruby></h4>
+                <p>
+                    このモデルでは、レールの基本となる高さから「最も高く盛り上がる場所」までの差が<strong>18</strong>に設定されています。
+                </p>
+                <p style="font-size: 1.25rem; font-weight: 900; margin: 1rem 0;">
+                    18 × 2 = <span style="color:#ef4444;">36</span>
+                </p>
+                <p style="margin-bottom: 2rem;">
+                    したがって、乗り物は一番下から一番上まで、合計<strong><span style="color:#ef4444;">36</span></strong>の距離を上下に往復して動いています。
+                </p>
+            </div>
+        </details>
 
-    <!-- ========== 大人向けコラム（折りたたみ） ========== -->
-    <details class="adult-column">
-        <summary>
-            <span>🔧</span>
-            <span>もっと<ruby>技術<rt>ぎじゅつ</rt></ruby><ruby>解説<rt>かいせつ</rt></ruby></span>
-            <span class="toggle-icon">▼</span>
-        </summary>
-        <div class="column-body">
-            <h4>カム<ruby>機構<rt>きこう</rt></ruby>（Cam Mechanism）とは</h4>
-            <p>
-                カム<ruby>機構<rt>きこう</rt></ruby>とは、<ruby>回転<rt>かいてん</rt></ruby><ruby>運動<rt>うんどう</rt></ruby>を上下（<ruby>往復<rt>おうふく</rt></ruby>）<ruby>運動<rt>うんどう</rt></ruby>に<ruby>変換<rt>へんかん</rt></ruby>する<ruby>機械<rt>きかい</rt></ruby><ruby>要素<rt>ようそ</rt></ruby>のひとつです。
-                このモデルでは、<ruby>円周<rt>えんしゅう</rt></ruby>上に<ruby>起伏<rt>きふく</rt></ruby>をつけたレール（カムトラック）の上をローラーが転がることで、
-                ライダーが上下に動く仕組みを<ruby>表現<rt>ひょうげん</rt></ruby>しています。
-            </p>
-            <p>
-                <ruby>実際<rt>じっさい</rt></ruby>のメリーゴーランドでは、<ruby>中央<rt>ちゅうおう</rt></ruby>の<ruby>回転<rt>かいてん</rt></ruby><ruby>軸<rt>じく</rt></ruby>から伸びるクランク<ruby>機構<rt>きこう</rt></ruby>やカム<ruby>機構<rt>きこう</rt></ruby>で上下<ruby>運動<rt>うんどう</rt></ruby>を生み出しています。
-                カム<ruby>機構<rt>きこう</rt></ruby>は<ruby>洗濯機<rt>せんたくき</rt></ruby>・エンジンのバルブ・ミシンなど、身近な<ruby>機械<rt>きかい</rt></ruby>に広く使われています。
-            </p>
-            <p>
-                <strong>このモデルの注目ポイント：</strong>
-                レールの<ruby>凹凸<rt>おうとつ</rt></ruby>の数（4山）とライダーの数（3基）がずれているため、
-                ライダーは<ruby>互<rt>たが</rt></ruby>い違いのタイミングで上下します。これにより<ruby>乗<rt>の</rt></ruby>り心地が<ruby>安定<rt>あんてい</rt></ruby>し、見た目のリズムも生まれています。
-            </p>
-        </div>
-    </details>
+        <!-- ========== ナビゲーション ========== -->
+        <nav class="episode-nav">
+            <a href="../index.html">🏠 目次へ</a>
+            <p class="nav-next-teaser">次回：🚪 自動ドアの構造</p>
+            <a href="ep02.html">次の回へ →</a>
+        </nav>
 
-    <!-- ========== ナビゲーション ========== -->
-    <nav class="episode-nav">
-        <a href="../index.html">🏠 目次へ</a>
-        <p class="nav-next-teaser">次回：🚪 自動ドアの構造</p>
-        <a href="ep02.html">次の回へ →</a>
-    </nav>
+    </div><!-- /page-wrapper -->
 
-</div><!-- /page-wrapper -->
+    <!-- ========== Three.js スクリプト ========== -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
 
-<!-- ========== Three.js スクリプト ========== -->
-<script>
-document.addEventListener('DOMContentLoaded', () => {
+            // ==========================================
+            // 1. Three.js セットアップ
+            // ==========================================
+            const container = document.getElementById('canvas-container');
+            const scene = new THREE.Scene();
 
-    // ==========================================
-    // 1. Three.js セットアップ
-    // ==========================================
-    const container = document.getElementById('canvas-container');
-    const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(40, container.clientWidth / container.clientHeight, 1, 1000);
+            camera.position.set(0, 110, 260);
 
-    const camera = new THREE.PerspectiveCamera(40, container.clientWidth / container.clientHeight, 1, 1000);
-    camera.position.set(0, 110, 260);
+            const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            container.appendChild(renderer.domElement);
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setSize(container.clientWidth, container.clientHeight);
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    container.appendChild(renderer.domElement);
+            const controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.maxPolarAngle = Math.PI / 2 + 0.1;
+            controls.minDistance = 50;
+            controls.maxDistance = 400;
 
-    const controls = new THREE.OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-    controls.dampingFactor = 0.05;
-    controls.maxPolarAngle = Math.PI / 2 + 0.1;
-    controls.minDistance = 50;
-    controls.maxDistance = 400;
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+            scene.add(ambientLight);
 
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
-    scene.add(ambientLight);
+            const mainLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            mainLight.position.set(50, 100, 50);
+            mainLight.castShadow = true;
+            mainLight.shadow.mapSize.width = 1024;
+            mainLight.shadow.mapSize.height = 1024;
+            scene.add(mainLight);
 
-    const mainLight = new THREE.DirectionalLight(0xffffff, 0.8);
-    mainLight.position.set(50, 100, 50);
-    mainLight.castShadow = true;
-    mainLight.shadow.mapSize.width = 1024;
-    mainLight.shadow.mapSize.height = 1024;
-    scene.add(mainLight);
+            const fillLight = new THREE.DirectionalLight(0xa5f3fc, 0.5);
+            fillLight.position.set(-50, 20, -50);
+            scene.add(fillLight);
 
-    const fillLight = new THREE.DirectionalLight(0xa5f3fc, 0.5);
-    fillLight.position.set(-50, 20, -50);
-    scene.add(fillLight);
+            // ==========================================
+            // 2. モデリング
+            // ==========================================
+            const carouselGroup = new THREE.Group();
+            scene.add(carouselGroup);
 
-    // ==========================================
-    // 2. モデリング
-    // ==========================================
-    const carouselGroup = new THREE.Group();
-    scene.add(carouselGroup);
+            const matBase = new THREE.MeshStandardMaterial({ color: 0x34d399, roughness: 0.8 });
+            const matCam = new THREE.MeshStandardMaterial({ color: 0xf43f5e, roughness: 0.3, metalness: 0.1 });
+            const matPole = new THREE.MeshStandardMaterial({ color: 0xfcd34d, roughness: 0.4 });
+            const matRoof = new THREE.MeshStandardMaterial({ color: 0x38bdf8, roughness: 0.5 });
+            const matRod = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, roughness: 0.2, metalness: 0.8 });
+            const blockColors = [0x8b5cf6, 0xf97316, 0x14b8a6];
+            const matBlocks = blockColors.map(c => new THREE.MeshStandardMaterial({ color: c, roughness: 0.5 }));
 
-    const matBase   = new THREE.MeshStandardMaterial({ color: 0x34d399, roughness: 0.8 });
-    const matCam    = new THREE.MeshStandardMaterial({ color: 0xf43f5e, roughness: 0.3, metalness: 0.1 });
-    const matPole   = new THREE.MeshStandardMaterial({ color: 0xfcd34d, roughness: 0.4 });
-    const matRoof   = new THREE.MeshStandardMaterial({ color: 0x38bdf8, roughness: 0.5 });
-    const matRod    = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, roughness: 0.2, metalness: 0.8 });
-    const blockColors = [0x8b5cf6, 0xf97316, 0x14b8a6];
-    const matBlocks = blockColors.map(c => new THREE.MeshStandardMaterial({ color: c, roughness: 0.5 }));
+            // 土台
+            const baseMesh = new THREE.Mesh(new THREE.CylinderGeometry(70, 75, 10, 32), matBase);
+            baseMesh.position.y = -5;
+            baseMesh.receiveShadow = true;
+            baseMesh.castShadow = true;
+            scene.add(baseMesh);
 
-    // 土台
-    const baseMesh = new THREE.Mesh(new THREE.CylinderGeometry(70, 75, 10, 32), matBase);
-    baseMesh.position.y = -5;
-    baseMesh.receiveShadow = true;
-    baseMesh.castShadow = true;
-    scene.add(baseMesh);
+            // カムトラック（波型レール）
+            const radius = 55;
+            const amplitude = 18;
+            const waves = 4;
+            const camRadius = 4;
+            const rollerRadius = 5;
 
-    // カムトラック（波型レール）
-    const radius      = 55;
-    const amplitude   = 18;
-    const waves       = 4;
-    const camRadius   = 4;
-    const rollerRadius = 5;
+            class CamCurve extends THREE.Curve {
+                constructor() { super(); }
+                getPoint(t, optionalTarget = new THREE.Vector3()) {
+                    const theta = t * Math.PI * 2;
+                    return optionalTarget.set(
+                        radius * Math.cos(theta),
+                        amplitude * Math.sin(waves * theta),
+                        -radius * Math.sin(theta)
+                    );
+                }
+            }
 
-    class CamCurve extends THREE.Curve {
-        constructor() { super(); }
-        getPoint(t, optionalTarget = new THREE.Vector3()) {
-            const theta = t * Math.PI * 2;
-            return optionalTarget.set(
-                radius * Math.cos(theta),
-                amplitude * Math.sin(waves * theta),
-                -radius * Math.sin(theta)
+            const camMesh = new THREE.Mesh(
+                new THREE.TubeGeometry(new CamCurve(), 200, camRadius, 16, true),
+                matCam
             );
-        }
-    }
+            camMesh.position.y = 15;
+            camMesh.castShadow = true;
+            camMesh.receiveShadow = true;
+            scene.add(camMesh);
 
-    const camMesh = new THREE.Mesh(
-        new THREE.TubeGeometry(new CamCurve(), 200, camRadius, 16, true),
-        matCam
-    );
-    camMesh.position.y = 15;
-    camMesh.castShadow = true;
-    camMesh.receiveShadow = true;
-    scene.add(camMesh);
+            // センターポールと屋根
+            const poleMesh = new THREE.Mesh(new THREE.CylinderGeometry(5, 5, 180, 16), matPole);
+            poleMesh.position.y = 90;
+            poleMesh.castShadow = true;
+            carouselGroup.add(poleMesh);
 
-    // センターポールと屋根
-    const poleMesh = new THREE.Mesh(new THREE.CylinderGeometry(5, 5, 180, 16), matPole);
-    poleMesh.position.y = 90;
-    poleMesh.castShadow = true;
-    carouselGroup.add(poleMesh);
+            const canopyInnerMesh = new THREE.Mesh(new THREE.CylinderGeometry(48, 48, 2, 32), matRoof);
+            canopyInnerMesh.position.y = 120;
+            carouselGroup.add(canopyInnerMesh);
 
-    const canopyInnerMesh = new THREE.Mesh(new THREE.CylinderGeometry(48, 48, 2, 32), matRoof);
-    canopyInnerMesh.position.y = 120;
-    carouselGroup.add(canopyInnerMesh);
+            const canopyOuterShape = new THREE.Shape();
+            canopyOuterShape.absarc(0, 0, 85, 0, Math.PI * 2, false);
+            const hole = new THREE.Path();
+            hole.absarc(0, 0, 62, 0, Math.PI * 2, true);
+            canopyOuterShape.holes.push(hole);
+            const canopyOuterGeo = new THREE.ExtrudeGeometry(canopyOuterShape, { depth: 2, bevelEnabled: false, curveSegments: 32 });
+            canopyOuterGeo.rotateX(Math.PI / 2);
+            const canopyOuterMesh = new THREE.Mesh(canopyOuterGeo, matRoof);
+            canopyOuterMesh.position.y = 121;
+            carouselGroup.add(canopyOuterMesh);
 
-    const canopyOuterShape = new THREE.Shape();
-    canopyOuterShape.absarc(0, 0, 85, 0, Math.PI * 2, false);
-    const hole = new THREE.Path();
-    hole.absarc(0, 0, 62, 0, Math.PI * 2, true);
-    canopyOuterShape.holes.push(hole);
-    const canopyOuterGeo = new THREE.ExtrudeGeometry(canopyOuterShape, { depth: 2, bevelEnabled: false, curveSegments: 32 });
-    canopyOuterGeo.rotateX(Math.PI / 2);
-    const canopyOuterMesh = new THREE.Mesh(canopyOuterGeo, matRoof);
-    canopyOuterMesh.position.y = 121;
-    carouselGroup.add(canopyOuterMesh);
+            const friezeMesh = new THREE.Mesh(new THREE.CylinderGeometry(85, 85, 40, 32), matRoof);
+            friezeMesh.position.y = 141;
+            carouselGroup.add(friezeMesh);
 
-    const friezeMesh = new THREE.Mesh(new THREE.CylinderGeometry(85, 85, 40, 32), matRoof);
-    friezeMesh.position.y = 141;
-    carouselGroup.add(friezeMesh);
+            const roofMesh = new THREE.Mesh(new THREE.ConeGeometry(88, 30, 16), matRoof);
+            roofMesh.position.y = 176;
+            carouselGroup.add(roofMesh);
 
-    const roofMesh = new THREE.Mesh(new THREE.ConeGeometry(88, 30, 16), matRoof);
-    roofMesh.position.y = 176;
-    carouselGroup.add(roofMesh);
+            // まわるブロックたち（お馬さんの代わり）
+            const numBlocks = 3;
+            const blocks = [];
 
-    // まわるブロックたち（お馬さんの代わり）
-    const numBlocks = 3;
-    const blocks = [];
+            for (let i = 0; i < numBlocks; i++) {
+                const angle = (i / numBlocks) * Math.PI * 2;
+                const sliderGroup = new THREE.Group();
+                sliderGroup.position.x = radius;
 
-    for (let i = 0; i < numBlocks; i++) {
-        const angle = (i / numBlocks) * Math.PI * 2;
-        const sliderGroup = new THREE.Group();
-        sliderGroup.position.x = radius;
+                const rodMesh = new THREE.Mesh(new THREE.CylinderGeometry(1.5, 1.5, 130, 8), matRod);
+                rodMesh.position.y = 65;
+                rodMesh.castShadow = true;
+                sliderGroup.add(rodMesh);
 
-        const rodMesh = new THREE.Mesh(new THREE.CylinderGeometry(1.5, 1.5, 130, 8), matRod);
-        rodMesh.position.y = 65;
-        rodMesh.castShadow = true;
-        sliderGroup.add(rodMesh);
+                const rollerUnit = new THREE.Group();
 
-        const rollerUnit = new THREE.Group();
+                const forkMesh = new THREE.Mesh(new THREE.BoxGeometry(4, 12, 8), matRod);
+                forkMesh.position.y = 5;
+                rollerUnit.add(forkMesh);
 
-        const forkMesh = new THREE.Mesh(new THREE.BoxGeometry(4, 12, 8), matRod);
-        forkMesh.position.y = 5;
-        rollerUnit.add(forkMesh);
+                const axisMesh = new THREE.Mesh(new THREE.CylinderGeometry(1.5, 1.5, 14, 8), matRod);
+                axisMesh.rotation.x = Math.PI / 2;
+                rollerUnit.add(axisMesh);
 
-        const axisMesh = new THREE.Mesh(new THREE.CylinderGeometry(1.5, 1.5, 14, 8), matRod);
-        axisMesh.rotation.x = Math.PI / 2;
-        rollerUnit.add(axisMesh);
+                const wheelGroup = new THREE.Group();
+                const rollerMesh = new THREE.Mesh(
+                    new THREE.CylinderGeometry(rollerRadius, rollerRadius, 8, 16),
+                    new THREE.MeshStandardMaterial({ color: 0xfde047, roughness: 0.3, metalness: 0.2 })
+                );
+                rollerMesh.rotation.z = Math.PI / 2;
+                wheelGroup.add(rollerMesh);
 
-        const wheelGroup = new THREE.Group();
-        const rollerMesh = new THREE.Mesh(
-            new THREE.CylinderGeometry(rollerRadius, rollerRadius, 8, 16),
-            new THREE.MeshStandardMaterial({ color: 0xfde047, roughness: 0.3, metalness: 0.2 })
-        );
-        rollerMesh.rotation.z = Math.PI / 2;
-        wheelGroup.add(rollerMesh);
+                const stripeGeo = new THREE.BoxGeometry(8.5, rollerRadius * 2.1, 2);
+                const stripeMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b });
+                const s1 = new THREE.Mesh(stripeGeo, stripeMat);
+                const s2 = new THREE.Mesh(stripeGeo, stripeMat);
+                s2.rotation.x = Math.PI / 2;
+                wheelGroup.add(s1, s2);
 
-        const stripeGeo = new THREE.BoxGeometry(8.5, rollerRadius * 2.1, 2);
-        const stripeMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b });
-        const s1 = new THREE.Mesh(stripeGeo, stripeMat);
-        const s2 = new THREE.Mesh(stripeGeo, stripeMat);
-        s2.rotation.x = Math.PI / 2;
-        wheelGroup.add(s1, s2);
+                rollerUnit.add(wheelGroup);
+                sliderGroup.add(rollerUnit);
 
-        rollerUnit.add(wheelGroup);
-        sliderGroup.add(rollerUnit);
+                const boxGroup = new THREE.Group();
+                boxGroup.position.y = 35;
 
-        const boxGroup = new THREE.Group();
-        boxGroup.position.y = 35;
+                const boxMesh = new THREE.Mesh(new THREE.BoxGeometry(18, 16, 18), matBlocks[i]);
+                boxMesh.castShadow = true;
+                boxGroup.add(boxMesh);
 
-        const boxMesh = new THREE.Mesh(new THREE.BoxGeometry(18, 16, 18), matBlocks[i]);
-        boxMesh.castShadow = true;
-        boxGroup.add(boxMesh);
+                const decoMesh = new THREE.Mesh(
+                    new THREE.CylinderGeometry(8, 8, 4, 8),
+                    new THREE.MeshStandardMaterial({ color: 0xffffff })
+                );
+                decoMesh.position.y = 10;
+                boxGroup.add(decoMesh);
+                sliderGroup.add(boxGroup);
 
-        const decoMesh = new THREE.Mesh(
-            new THREE.CylinderGeometry(8, 8, 4, 8),
-            new THREE.MeshStandardMaterial({ color: 0xffffff })
-        );
-        decoMesh.position.y = 10;
-        boxGroup.add(decoMesh);
-        sliderGroup.add(boxGroup);
+                const pivotGroup = new THREE.Group();
+                pivotGroup.rotation.y = angle;
+                pivotGroup.add(sliderGroup);
+                carouselGroup.add(pivotGroup);
 
-        const pivotGroup = new THREE.Group();
-        pivotGroup.rotation.y = angle;
-        pivotGroup.add(sliderGroup);
-        carouselGroup.add(pivotGroup);
+                blocks.push({ group: sliderGroup, rollerUnit, wheelGroup, boxGroup, baseAngle: angle });
+            }
 
-        blocks.push({ group: sliderGroup, rollerUnit, wheelGroup, boxGroup, baseAngle: angle });
-    }
+            // ==========================================
+            // 3. アニメーション制御
+            // ==========================================
+            let isAuto = true;
+            let currentRotation = 0;
 
-    // ==========================================
-    // 3. アニメーション制御
-    // ==========================================
-    let isAuto = true;
-    let currentRotation = 0;
+            const btnAuto = document.getElementById('btn-auto');
+            const btnManual = document.getElementById('btn-manual');
+            const manualDiv = document.getElementById('manual-controls');
+            const slider = document.getElementById('rotationSlider');
 
-    const btnAuto   = document.getElementById('btn-auto');
-    const btnManual = document.getElementById('btn-manual');
-    const manualDiv = document.getElementById('manual-controls');
-    const slider    = document.getElementById('rotationSlider');
+            btnAuto.addEventListener('click', () => {
+                isAuto = true;
+                btnAuto.classList.remove('dimmed');
+                btnManual.classList.add('dimmed');
+                manualDiv.style.display = 'none';
+            });
 
-    btnAuto.addEventListener('click', () => {
-        isAuto = true;
-        btnAuto.classList.remove('dimmed');
-        btnManual.classList.add('dimmed');
-        manualDiv.style.display = 'none';
-    });
+            btnManual.addEventListener('click', () => {
+                isAuto = false;
+                btnManual.classList.remove('dimmed');
+                btnAuto.classList.add('dimmed');
+                manualDiv.style.display = 'block';
+                let deg = (currentRotation * 180 / Math.PI) % 360;
+                if (deg < 0) deg += 360;
+                slider.value = deg;
+            });
 
-    btnManual.addEventListener('click', () => {
-        isAuto = false;
-        btnManual.classList.remove('dimmed');
-        btnAuto.classList.add('dimmed');
-        manualDiv.style.display = 'block';
-        let deg = (currentRotation * 180 / Math.PI) % 360;
-        if (deg < 0) deg += 360;
-        slider.value = deg;
-    });
+            slider.addEventListener('input', (e) => {
+                if (!isAuto) currentRotation = e.target.value * Math.PI / 180;
+            });
 
-    slider.addEventListener('input', (e) => {
-        if (!isAuto) currentRotation = e.target.value * Math.PI / 180;
-    });
+            document.getElementById('loading').style.display = 'none';
 
-    document.getElementById('loading').style.display = 'none';
+            function animate() {
+                requestAnimationFrame(animate);
+                controls.update();
+                if (isAuto) currentRotation += 0.01;
 
-    function animate() {
-        requestAnimationFrame(animate);
-        controls.update();
-        if (isAuto) currentRotation += 0.01;
+                carouselGroup.rotation.y = -currentRotation;
 
-        carouselGroup.rotation.y = -currentRotation;
+                blocks.forEach(block => {
+                    const absoluteAngle = -currentRotation + block.baseAngle;
+                    const baseCamY = amplitude * Math.sin(waves * absoluteAngle) + 15;
+                    const slope = (amplitude * waves * Math.cos(waves * absoluteAngle)) / radius;
+                    const pitchAngle = Math.atan(slope);
+                    const offset = (camRadius + rollerRadius - 1.5) / Math.cos(pitchAngle);
+                    block.group.position.y = baseCamY + offset;
+                    block.wheelGroup.rotation.x = (currentRotation * radius) / rollerRadius;
+                });
 
-        blocks.forEach(block => {
-            const absoluteAngle = -currentRotation + block.baseAngle;
-            const baseCamY = amplitude * Math.sin(waves * absoluteAngle) + 15;
-            const slope = (amplitude * waves * Math.cos(waves * absoluteAngle)) / radius;
-            const pitchAngle = Math.atan(slope);
-            const offset = (camRadius + rollerRadius - 1.5) / Math.cos(pitchAngle);
-            block.group.position.y = baseCamY + offset;
-            block.wheelGroup.rotation.x = (currentRotation * radius) / rollerRadius;
+                renderer.render(scene, camera);
+            }
+            animate();
+
+            window.addEventListener('resize', () => {
+                renderer.setSize(container.clientWidth, container.clientHeight);
+                camera.aspect = container.clientWidth / container.clientHeight;
+                camera.updateProjectionMatrix();
+            });
         });
-
-        renderer.render(scene, camera);
-    }
-    animate();
-
-    window.addEventListener('resize', () => {
-        renderer.setSize(container.clientWidth, container.clientHeight);
-        camera.aspect = container.clientWidth / container.clientHeight;
-        camera.updateProjectionMatrix();
-    });
-});
-</script>
+    </script>
 </body>
+
 </html>

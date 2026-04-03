@@ -15,11 +15,11 @@
       "id": 2,
       "slug": "ep02",
       "title": "自動ドアの構造",
-      "mechanism": "センサー＋リンク機構",
+      "mechanism": "ラック＆ピニオン機構",
       "question": "なぜ近づくと開くの？",
       "emoji": "🚪",
       "color": "#34d399",
-      "status": "coming_soon",
+      "status": "published",
       "file": "episodes/ep02.html"
     },
     {
@@ -30,7 +30,7 @@
       "question": "なぜ速さが変わるの？",
       "emoji": "⚙️",
       "color": "#f97316",
-      "status": "coming_soon",
+      "status": "published",
       "file": "episodes/ep03.html"
     },
     {
@@ -41,7 +41,7 @@
       "question": "なぜステップが傾かないの？",
       "emoji": "🏗️",
       "color": "#8b5cf6",
-      "status": "coming_soon",
+      "status": "published",
       "file": "episodes/ep04.html"
     },
     {
