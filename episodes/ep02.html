@@ -23,8 +23,679 @@
 
     <!-- ========== 3Dビューアーカード ========== -->
     <div class="viewer-card">
-         <p class="subtitle-badge"> 　　　　　　　　　　　　　　　　　　　　　　　　　　準備中...</p>
-    </div>    
+
+        <!-- コントロールバー -->
+        <div class="control-bar">
+            <div style="display:flex; gap:0.75rem;">
+                <button id="btn-auto" class="btn-pop btn-auto">
+                    <span>▶️</span> 自動回転
+                </button>
+                <button id="btn-manual" class="btn-pop btn-manual dimmed">
+                    <span>🖐️</span> 手動操作
+                </button>
+            </div>
+
+            <div class="manual-controls" id="manual-controls" style="display:none;">
+                <p class="slider-label">スライダーでドアを開閉</p>
+                <input type="range" id="rotationSlider" min="0" max="100" value="0">
+            </div>
+        </div>
+
+        <!-- キャンバス -->
+        <div id="canvas-container">
+            <div id="loading">読み込み中...</div>
+        </div>
+
+        <!-- ヒント -->
+        <div class="canvas-hints">
+            <span>👆 ドラッグで視点を回転</span>
+            <span>🔍 スクロールでズーム</span>
+        </div>
+    </div>
+
+    <!-- ========== 解説グリッド ========== -->
+    <div class="info-grid">
+
+        <!-- ふきだし：なぜ動くの？ -->
+        <div class="speech-bubble">
+            <h2><span>🔍</span> どうしてドアが自動で開くの？</h2>
+            <p>
+                自動ドアの上の方には、丸い<ruby>歯車<rt>はぐるま</rt></ruby>（<span style="color:#f97316; font-weight:900;">ピニオン</span>）と、
+                まっすぐな<ruby>歯<rt>は</rt></ruby>のついたレール（<span style="color:#6366f1; font-weight:900;">ラック</span>）が<ruby>隠<rt>かく</rt></ruby>れているよ。<br><br>
+                モーターがピニオンを回すと、<ruby>歯<rt>は</rt></ruby>と<ruby>歯<rt>は</rt></ruby>がかみ合って、
+                ラックを<ruby>横<rt>よこ</rt></ruby>に押し出す。するとドアがスーッと横にスライドして開くんだ。<br><br>
+                この「<ruby>回転<rt>かいてん</rt></ruby>する動き」を「まっすぐな動き」に変えるしくみを<strong>「ラック＆ピニオン<ruby>機構<rt>きこう</rt></ruby>」</strong>という。<br><br>
+                <ruby>歯車<rt>はぐるま</rt></ruby>の<ruby>歯<rt>は</rt></ruby>がかみ合う<ruby>瞬間<rt>しゅんかん</rt></ruby>をよく見てみよう！
+            </p>
+        </div>
+
+        <!-- チェックリスト：観察ポイント -->
+        <div class="checklist-card">
+            <span class="deco-icon">🚪</span>
+            <h3><ruby>観察<rt>かんさつ</rt></ruby>ポイント</h3>
+            <ul>
+                <li>
+                    <span class="num">1</span>
+                    <span>自動回転にして、オレンジの<ruby>歯車<rt>はぐるま</rt></ruby>（ピニオン）が回ると、紫のレール（ラック）がどう動くか見てみよう。</span>
+                </li>
+                <li>
+                    <span class="num">2</span>
+                    <span><ruby>手動操作<rt>しゅどうそうさ</rt></ruby>にして、スライダーでゆっくり動かそう。<ruby>歯<rt>は</rt></ruby>と<ruby>歯<rt>は</rt></ruby>がかみ合う<ruby>様子<rt>ようす</rt></ruby>がわかるかな？</span>
+                </li>
+                <li>
+                    <span class="num">3</span>
+                    <span>2<ruby>枚<rt>まい</rt></ruby>のドアは左右<ruby>対称<rt>たいしょう</rt></ruby>に動いてるよ。1つの<ruby>歯車<rt>はぐるま</rt></ruby>でどうやって2<ruby>枚<rt>まい</rt></ruby>のドアを<ruby>反対<rt>はんたい</rt></ruby>に動かしている？</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- ========== 大人向けコラム（折りたたみ） ========== -->
+    <details class="adult-column">
+        <summary>
+            <span>🔧</span>
+            <span>もっと<ruby>技術<rt>ぎじゅつ</rt></ruby><ruby>解説<rt>かいせつ</rt></ruby></span>
+            <span class="toggle-icon">▼</span>
+        </summary>
+        <div class="column-body">
+                <h4>ラック＆ピニオン<ruby>機構<rt>きこう</rt></ruby>（Rack and Pinion）とは</h4>
+                <p>
+                    <ruby>回転<rt>かいてん</rt></ruby><ruby>運動<rt>うんどう</rt></ruby>を<ruby>直線<rt>ちょくせん</rt></ruby><ruby>運動<rt>うんどう</rt></ruby>に<ruby>変換<rt>へんかん</rt></ruby>する<ruby>機構<rt>きこう</rt></ruby>です。中心の円い歯車（ピニオン）が回ることで、それに噛み合っている平らな歯車（ラック）が水平にスライドして動きます。
+                </p>
+
+                <h4>どんなところで使われているの？</h4>
+                <p>
+                    <strong>自動車のハンドル</strong>（回す動きを、タイヤを左右に向ける動きに変える）や、工作に使う<strong>3Dプリンター</strong>（ノズルを正確にスライドさせる動き）、<strong>カメラの三脚</strong>（ハンドルを回して高さを変える）などによく使われています。また、山の急斜面を登る<strong>特別な鉄道（アプト式鉄道）</strong>では、線路の真ん中にラックを敷き、歯車と噛み合わせて急坂を登っていきます。
+                </p>
+
+                <h4>ドアがスライドする距離の<ruby>計算式<rt>けいさんしき</rt></ruby></h4>
+                <div style="background:#fefce8; padding: 1rem; border: 2px solid #fde047; border-radius: 8px; margin-bottom: 1.5rem;">
+                    <strong>歯車の直径 × 3.14 ＝ <span style="color:#ef4444;">歯車が1周したときに進む距離</span></strong>
+                </div>
+
+                <h4>このモデルでの<ruby>計算<rt>けいさん</rt></ruby></h4>
+                <p>
+                    このモデルでは、オレンジ色の歯車（ピニオン）の半径が<strong>8</strong>（＝直径16）に設定されています。
+                </p>
+                <p style="font-size: 1.25rem; font-weight: 900; margin: 1rem 0;">
+                    16 × 3.14 = <span style="color:#ef4444;">50.24</span>
+                </p>
+                <p style="margin-bottom: 2rem;">
+                    したがって、真ん中の歯車が1周（360度）すると、ドアは横に約<strong><span style="color:#ef4444;">50.2</span></strong>スライドすることになります。（半周の180度なら、その半分の「25.1」だけドアが開きます）
+                </p>
+        </div>
+    </details>
+
+    <!-- ========== ナビゲーション ========== -->
+    <nav class="episode-nav" style="display: flex; flex-direction: column; align-items: center; gap: 1rem;">
+        <p class="nav-next-teaser">次回：⚙️ 自転車のギアの構造</p>
+        <div style="display: flex; gap: 2rem; width: 100%; justify-content: center; align-items: center;">
+            <a href="ep01.html">← 前の回</a>
+            <a href="../index.html" style="font-weight:bold;">🏠 目次へ</a>
+            <a href="ep03.html">次の回 →</a>
+        </div>
+    </nav>
+
+</div><!-- /page-wrapper -->
+
+<!-- ========== Three.js スクリプト ========== -->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    // ==========================================
+    // 1. Three.js セットアップ
+    // ==========================================
+    const container = document.getElementById('canvas-container');
+    const scene = new THREE.Scene();
+
+    const camera = new THREE.PerspectiveCamera(40, container.clientWidth / container.clientHeight, 1, 1000);
+    // 斜め上からの視点 — 機構が一番見やすい角度
+    camera.position.set(80, 100, 160);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    container.appendChild(renderer.domElement);
+
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    controls.maxPolarAngle = Math.PI / 2 + 0.3;
+    controls.minDistance = 40;
+    controls.maxDistance = 350;
+    controls.target.set(0, 55, 0);
+
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.75);
+    scene.add(ambientLight);
+
+    const mainLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    mainLight.position.set(60, 120, 80);
+    mainLight.castShadow = true;
+    mainLight.shadow.mapSize.width = 1024;
+    mainLight.shadow.mapSize.height = 1024;
+    scene.add(mainLight);
+
+    const fillLight = new THREE.DirectionalLight(0xa5f3fc, 0.4);
+    fillLight.position.set(-60, 30, -60);
+    scene.add(fillLight);
+
+    // ==========================================
+    // 2. 物理パラメーター
+    // ==========================================
+
+    // ■ ピニオン（円形歯車）
+    // 歯車用語:
+    //   ピッチ円半径 = 歯のかみ合い基準となる仮想の円
+    //   歯先円半径 (addendum) = 歯の先端が描く円 = ピッチ円 + 歯末たけ
+    //   歯底円半径 (dedendum) = 歯溝の底が描く円 = ピッチ円 - 歯元たけ
+    //   ★ かみ合い条件: 一方の歯先円が相手の歯底円まで入り込む
+    const pinionRadius  = 10;       // ピッチ円半径
+    const pinionTeeth   = 16;       // 歯数
+    const addendum      = 3.0;      // 歯末たけ（ピッチ円から歯先までの距離）
+    const dedendum      = 3.5;      // 歯元たけ（ピッチ円から歯底までの距離）
+    const gearThickness = 10;       // 歯車の奥行き（Z方向）
+
+    // ピニオンの歯先円・歯底円
+    const tipRadius  = pinionRadius + addendum;   // = 13   歯先円
+    const rootRadius = pinionRadius - dedendum;    // = 6.5  歯底円
+
+    // ■ ラック（直線歯列）
+    // ピッチ（歯の間隔）はピニオンに合わせる
+    const toothPitch   = (2 * Math.PI * pinionRadius) / pinionTeeth;
+    const rackTeethNum = 24;
+    const rackLength   = toothPitch * rackTeethNum;
+    // ラック側もピニオンと同じ歯たけ
+    const rackAddendum = addendum;   // ラックの歯先の高さ
+    const rackDedendum = dedendum;   // ラックの歯溝の深さ
+    const rackBaseH    = 6;          // ラックのベース（歯がない部分）の厚み
+
+    // ■ ドアのスライド
+    const maxSlideDistance = 52;
+    // 物理法則: s = r × θ → θ = s / r
+    const maxPinionAngle  = maxSlideDistance / pinionRadius;
+
+    // ■ ドア寸法
+    const doorWidth   = 54;
+    const doorHeight  = 85;
+    const doorThick   = 4;
+
+    // ■ フレーム寸法
+    const frameInnerW = 110;
+    const frameH      = 100;
+    const mechY       = frameH + 10;  // 機構の高さ（フレーム上端の少し上）
+
+    // ==========================================
+    // 3. マテリアル
+    // ==========================================
+    const matFrame     = new THREE.MeshStandardMaterial({ color: 0x475569, roughness: 0.5, metalness: 0.4 });
+    const matGlassL    = new THREE.MeshStandardMaterial({ color: 0x93c5fd, roughness: 0.1, metalness: 0.05, transparent: true, opacity: 0.45 });
+    const matGlassR    = new THREE.MeshStandardMaterial({ color: 0xa5b4fc, roughness: 0.1, metalness: 0.05, transparent: true, opacity: 0.45 });
+    const matDoorEdge  = new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.3, metalness: 0.6 });
+    const matPinion    = new THREE.MeshStandardMaterial({ color: 0xf97316, roughness: 0.25, metalness: 0.5 });
+    const matRackTop   = new THREE.MeshStandardMaterial({ color: 0x6366f1, roughness: 0.25, metalness: 0.5 });
+    const matRackBot   = new THREE.MeshStandardMaterial({ color: 0x8b5cf6, roughness: 0.25, metalness: 0.5 });
+    const matMotor     = new THREE.MeshStandardMaterial({ color: 0x34d399, roughness: 0.4 });
+    const matFloor     = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, roughness: 0.9 });
+    const matAxle      = new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.85, roughness: 0.15 });
+    const matGuide     = new THREE.MeshStandardMaterial({ color: 0x94a3b8, roughness: 0.4, metalness: 0.5 });
+    const matHousing   = new THREE.MeshStandardMaterial({ color: 0xcbd5e1, roughness: 0.1, metalness: 0.1, transparent: true, opacity: 0.2 });
+    const matLabel     = new THREE.MeshStandardMaterial({ color: 0xfbbf24, roughness: 0.3 });
+
+    // ==========================================
+    // 4. 歯車生成ヘルパー
+    // ==========================================
+
+    /**
+     * ピニオン歯車の断面Shape
+     * 参考画像のように歯先が尖って歯溝が深い、明確なかみ合いプロファイル
+     * 
+     * 歯車の断面（1歯分）:
+     *        /‾\        ← 歯先（tipR = pitchR + addendum）
+     *       /   \
+     *      /     \      ← 歯面（インボリュート曲線の簡易版）
+     *   __/       \__   ← 歯底（rootR = pitchR - dedendum）
+     */
+    function createPinionShape(pitchR, teeth, add, ded) {
+        const shape = new THREE.Shape();
+        const tipR  = pitchR + add;    // 歯先円
+        const rootR = pitchR - ded;    // 歯底円
+        const aPerTooth = (2 * Math.PI) / teeth;
+
+        for (let i = 0; i < teeth; i++) {
+            const base = i * aPerTooth;
+
+            // 歯底（溝の平坦部分）→ 歯の立ち上がり → 歯先 → 歯の下り → 歯底
+            // 参考画像のように歯先を狭く、歯溝を広めに設計
+            const a_rootStart    = base;                       // 歯底の開始
+            const a_riseBase     = base + aPerTooth * 0.15;    // 歯元（立ち上がり開始）
+            const a_risePitch    = base + aPerTooth * 0.22;    // ピッチ円通過点
+            const a_tipStart     = base + aPerTooth * 0.30;    // 歯先の開始
+            const a_tipPeak      = base + aPerTooth * 0.375;   // 歯先の頂点
+            const a_tipEnd       = base + aPerTooth * 0.45;    // 歯先の終了
+            const a_fallPitch    = base + aPerTooth * 0.53;    // ピッチ円通過点
+            const a_fallBase     = base + aPerTooth * 0.60;    // 歯元（下り終了）
+            const a_rootEnd      = base + aPerTooth;           // 歯底の終了
+
+            if (i === 0) {
+                shape.moveTo(rootR * Math.cos(a_rootStart), rootR * Math.sin(a_rootStart));
+            }
+
+            // 歯底の平坦部（溝）
+            shape.lineTo(rootR * Math.cos(a_riseBase), rootR * Math.sin(a_riseBase));
+
+            // 歯の立ち上がり（歯底→歯先へ）: 緩やかな曲線をテーパーで近似
+            const midRiseR = (rootR + tipR) / 2;
+            shape.lineTo(midRiseR * Math.cos(a_risePitch), midRiseR * Math.sin(a_risePitch));
+
+            // 歯先（先端部分は狭い＝参考画像の三角形に近い形状）
+            shape.lineTo(tipR * Math.cos(a_tipStart), tipR * Math.sin(a_tipStart));
+            shape.lineTo(tipR * Math.cos(a_tipPeak),  tipR * Math.sin(a_tipPeak));
+            shape.lineTo(tipR * Math.cos(a_tipEnd),   tipR * Math.sin(a_tipEnd));
+
+            // 歯の下り（歯先→歯底へ）
+            shape.lineTo(midRiseR * Math.cos(a_fallPitch), midRiseR * Math.sin(a_fallPitch));
+            shape.lineTo(rootR * Math.cos(a_fallBase), rootR * Math.sin(a_fallBase));
+
+            // 歯底の平坦部（次の歯との間の溝）
+            shape.lineTo(rootR * Math.cos(a_rootEnd), rootR * Math.sin(a_rootEnd));
+        }
+        shape.closePath();
+        return shape;
+    }
+
+    /**
+     * ラック（直線歯列）の断面Shape
+     * 歯のプロファイルをピニオンと完全に対応させる
+     * 
+     * 歯の断面（1歯分、歯が上向きの場合）:
+     *      /\        ← 歯先（baseH + rackAddendum）
+     *     /  \
+     *    /    \
+     *   /      \     ← 歯面
+     *  /________\    ← 歯底（baseH - rackDedendum）... ピニオンの歯先が入る溝
+     * |__________|   ← ベース
+     * 
+     * @param {boolean} teethOnTop - trueなら歯が上方向
+     */
+    function createRackShape(numTeeth, pitch, rAdd, rDed, baseH, teethOnTop) {
+        const totalLen = numTeeth * pitch;
+        const dir = teethOnTop ? 1 : -1;
+        const shape = new THREE.Shape();
+
+        // ピッチライン（かみ合い基準線）の位置 = baseH（ベース上端）
+        // 歯先 = baseH + rackAddendum
+        // 歯溝の底 = baseH - rackDedendum（ピニオンの歯先が入り込む深さ）
+        const pitchLineH = baseH;
+        const toothTopH  = pitchLineH + rAdd;
+        const toothBotH  = Math.max(0.5, pitchLineH - rDed);  // ベースを突き抜けないように
+
+        // ベース底面
+        shape.moveTo(-totalLen / 2, 0);
+        shape.lineTo( totalLen / 2, 0);
+        // ベース上端（＝ 歯溝の底のライン）
+        shape.lineTo( totalLen / 2, dir * toothBotH);
+
+        // 歯列（右から左へ描画）
+        for (let i = numTeeth - 1; i >= 0; i--) {
+            const x0 = -totalLen / 2 + i * pitch;
+
+            // 歯溝の底（ピニオンの歯先が入る凹み）
+            shape.lineTo(x0 + pitch,          dir * toothBotH);
+
+            // 歯の立ち上がり → 歯先 → 歯の下り（三角形に近い台形）
+            // 歯元の幅: ピッチの60%程度
+            // 歯先の幅: ピッチの15%程度（参考画像のように尖った先端）
+            shape.lineTo(x0 + pitch * 0.80,   dir * toothBotH);     // 歯元の右端
+            shape.lineTo(x0 + pitch * 0.70,   dir * pitchLineH);    // ピッチライン通過
+            shape.lineTo(x0 + pitch * 0.575,  dir * toothTopH);     // 歯先の右端
+            shape.lineTo(x0 + pitch * 0.50,   dir * (toothTopH + 0.3));  // 歯先頂点（わずかに尖る）
+            shape.lineTo(x0 + pitch * 0.425,  dir * toothTopH);     // 歯先の左端
+            shape.lineTo(x0 + pitch * 0.30,   dir * pitchLineH);    // ピッチライン通過
+            shape.lineTo(x0 + pitch * 0.20,   dir * toothBotH);     // 歯元の左端
+            shape.lineTo(x0,                  dir * toothBotH);      // 歯溝の底
+        }
+
+        shape.lineTo(-totalLen / 2, 0);
+        shape.closePath();
+        return shape;
+    }
+
+    // ==========================================
+    // 5. モデリング
+    // ==========================================
+
+    // --- 地面 ---
+    const floorMesh = new THREE.Mesh(new THREE.BoxGeometry(220, 2, 120), matFloor);
+    floorMesh.position.y = -1;
+    floorMesh.receiveShadow = true;
+    scene.add(floorMesh);
+
+    // --- ドアフレーム ---
+    // 左柱
+    const pillarGeo = new THREE.BoxGeometry(6, frameH, 14);
+    const pillarL = new THREE.Mesh(pillarGeo, matFrame);
+    pillarL.position.set(-frameInnerW / 2 - 3, frameH / 2, 0);
+    pillarL.castShadow = true;
+    scene.add(pillarL);
+
+    // 右柱
+    const pillarR = new THREE.Mesh(pillarGeo, matFrame);
+    pillarR.position.set(frameInnerW / 2 + 3, frameH / 2, 0);
+    pillarR.castShadow = true;
+    scene.add(pillarR);
+
+    // 上枠（機構を覆うハウジング — 半透明で中が見える）
+    const housingMesh = new THREE.Mesh(
+        new THREE.BoxGeometry(frameInnerW + 12, 26, 18),
+        matHousing
+    );
+    housingMesh.position.set(0, mechY, 0);
+    scene.add(housingMesh);
+
+    // 上枠のフレーム線（ワイヤーフレームで輪郭を強調）
+    const housingWire = new THREE.LineSegments(
+        new THREE.EdgesGeometry(new THREE.BoxGeometry(frameInnerW + 12, 26, 18)),
+        new THREE.LineBasicMaterial({ color: 0x94a3b8, linewidth: 1 })
+    );
+    housingWire.position.copy(housingMesh.position);
+    scene.add(housingWire);
+
+    // 下部ガイドレール
+    const railMesh = new THREE.Mesh(new THREE.BoxGeometry(frameInnerW, 2.5, 6), matGuide);
+    railMesh.position.set(0, 1.5, 0);
+    railMesh.receiveShadow = true;
+    scene.add(railMesh);
+
+    // レールの溝
+    const grooveMesh = new THREE.Mesh(
+        new THREE.BoxGeometry(frameInnerW, 1, 2),
+        new THREE.MeshStandardMaterial({ color: 0x64748b, roughness: 0.5 })
+    );
+    grooveMesh.position.set(0, 2.8, 0);
+    scene.add(grooveMesh);
+
+    // --- ドアパネル ---
+    function createDoorPanel(glassMat, edgeSide) {
+        const group = new THREE.Group();
+
+        // ガラスパネル
+        const glass = new THREE.Mesh(new THREE.BoxGeometry(doorWidth, doorHeight, doorThick), glassMat);
+        glass.castShadow = true;
+        group.add(glass);
+
+        // ドア枠（上下左右）
+        const edgeH = new THREE.Mesh(new THREE.BoxGeometry(doorWidth + 2, 2.5, doorThick + 1), matDoorEdge);
+        edgeH.position.y = doorHeight / 2;
+        group.add(edgeH);
+
+        const edgeHb = new THREE.Mesh(new THREE.BoxGeometry(doorWidth + 2, 2.5, doorThick + 1), matDoorEdge);
+        edgeHb.position.y = -doorHeight / 2;
+        group.add(edgeHb);
+
+        const edgeV = new THREE.Mesh(new THREE.BoxGeometry(2.5, doorHeight, doorThick + 1), matDoorEdge);
+        edgeV.position.x = edgeSide * (doorWidth / 2);
+        group.add(edgeV);
+
+        // 取っ手マーク
+        const handle = new THREE.Mesh(
+            new THREE.BoxGeometry(1.5, 12, 2),
+            matGuide
+        );
+        handle.position.set(edgeSide * (doorWidth / 2 - 6), 0, doorThick / 2 + 1);
+        group.add(handle);
+
+        return group;
+    }
+
+    const doorLGroup = createDoorPanel(matGlassL, 1);   // 閉まり側の縁は右
+    // 閉じた状態: 左ドアの右端が中央(x=0)に来る → 中心はx = -doorWidth/2
+    doorLGroup.position.set(-doorWidth / 2, doorHeight / 2 + 3, 0);
+    scene.add(doorLGroup);
+
+    const doorRGroup = createDoorPanel(matGlassR, -1);  // 閉まり側の縁は左
+    // 閉じた状態: 右ドアの左端が中央(x=0)に来る → 中心はx = +doorWidth/2
+    doorRGroup.position.set(doorWidth / 2, doorHeight / 2 + 3, 0);
+    scene.add(doorRGroup);
+
+    // --- ピニオン歯車（オレンジ） ---
+    const pinionShape = createPinionShape(pinionRadius, pinionTeeth, addendum, dedendum);
+    const pinionGeo   = new THREE.ExtrudeGeometry(pinionShape, { depth: gearThickness, bevelEnabled: false });
+    pinionGeo.center();
+
+    const pinionMesh = new THREE.Mesh(pinionGeo, matPinion);
+    pinionMesh.position.set(0, mechY, 0);
+    pinionMesh.castShadow = true;
+    scene.add(pinionMesh);
+
+    // ピニオンの軸（中心を貫く棒）
+    const axleMesh = new THREE.Mesh(
+        new THREE.CylinderGeometry(2.5, 2.5, gearThickness + 8, 16),
+        matAxle
+    );
+    axleMesh.rotation.x = Math.PI / 2;
+    axleMesh.position.set(0, mechY, 0);
+    scene.add(axleMesh);
+
+    // 軸の中心点（黄色の目印）
+    const centerDot = new THREE.Mesh(
+        new THREE.SphereGeometry(2, 16, 16),
+        matLabel
+    );
+    centerDot.position.set(0, mechY, gearThickness / 2 + 2);
+    scene.add(centerDot);
+
+    // --- 上ラック（青紫・左ドアに接続） ---
+    // ラックの歯がピニオンの上側に噛み合う → 歯は下向き
+    // ラックのピッチラインがピニオンのピッチ円に接する配置
+    const rackTopShape = createRackShape(rackTeethNum, toothPitch, rackAddendum, rackDedendum, rackBaseH, false);
+    const rackTopGeo   = new THREE.ExtrudeGeometry(rackTopShape, { depth: gearThickness, bevelEnabled: false });
+    rackTopGeo.center();
+
+    const rackTopMesh = new THREE.Mesh(rackTopGeo, matRackTop);
+    // ★ かみ合い配置:
+    //   ピニオンの歯先(tipRadius)がラックの歯溝に入り込み、
+    //   ラックの歯先がピニオンの歯溝(rootRadius)に入り込む
+    //   → ピッチ円同士が接する位置 + 微小バックラッシュ
+    const rackGap = 0.3; // バックラッシュ
+    rackTopMesh.position.set(0, mechY + pinionRadius + rackGap, 0);
+    rackTopMesh.castShadow = true;
+    scene.add(rackTopMesh);
+
+    // --- 下ラック（紫・右ドアに接続） ---
+    // ラックの歯がピニオンの下側に噛み合う → 歯は上向き
+    const rackBotShape = createRackShape(rackTeethNum, toothPitch, rackAddendum, rackDedendum, rackBaseH, true);
+    const rackBotGeo   = new THREE.ExtrudeGeometry(rackBotShape, { depth: gearThickness, bevelEnabled: false });
+    rackBotGeo.center();
+
+    const rackBotMesh = new THREE.Mesh(rackBotGeo, matRackBot);
+    // 下側も同じバックラッシュで配置
+    rackBotMesh.position.set(0, mechY - pinionRadius - rackGap, 0);
+    rackBotMesh.castShadow = true;
+    scene.add(rackBotMesh);
+
+    // --- ラックとドアの接続バー ---
+    const connGeo = new THREE.BoxGeometry(3, 18, 4);
+
+    const connL = new THREE.Mesh(connGeo, matRackTop);
+    scene.add(connL);
+
+    const connR = new THREE.Mesh(connGeo, matRackBot);
+    scene.add(connR);
+
+    // --- モーター（緑のブロック、ピニオンの背後） ---
+    const motorGroup = new THREE.Group();
+
+    const motorBody = new THREE.Mesh(
+        new THREE.BoxGeometry(14, 12, 16),
+        matMotor
+    );
+    motorBody.castShadow = true;
+    motorGroup.add(motorBody);
+
+    // モーターラベル「M」
+    const motorDot = new THREE.Mesh(
+        new THREE.CylinderGeometry(3, 3, 1, 16),
+        new THREE.MeshStandardMaterial({ color: 0xffffff })
+    );
+    motorDot.rotation.x = Math.PI / 2;
+    motorDot.position.z = 8.5;
+    motorGroup.add(motorDot);
+
+    motorGroup.position.set(0, mechY, -16);
+    scene.add(motorGroup);
+
+    // モーターシャフト
+    const shaftMesh = new THREE.Mesh(
+        new THREE.CylinderGeometry(2, 2, 12, 8),
+        matAxle
+    );
+    shaftMesh.rotation.x = Math.PI / 2;
+    shaftMesh.position.set(0, mechY, -9);
+    scene.add(shaftMesh);
+
+    // --- ラベル表示用のスプライト ---
+    function createTextSprite(text, color) {
+        const canvas = document.createElement('canvas');
+        canvas.width = 256;
+        canvas.height = 64;
+        const ctx = canvas.getContext('2d');
+        ctx.font = 'bold 36px sans-serif';
+        ctx.fillStyle = color;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(text, 128, 32);
+
+        const tex = new THREE.CanvasTexture(canvas);
+        const mat = new THREE.SpriteMaterial({ map: tex, depthTest: false });
+        const sprite = new THREE.Sprite(mat);
+        sprite.scale.set(20, 5, 1);
+        return sprite;
+    }
+
+    // ピニオンのラベル
+    const labelPinion = createTextSprite('← ピニオン', '#ea580c');
+    labelPinion.position.set(22, mechY + 2, 12);
+    scene.add(labelPinion);
+
+    // 上ラックのラベル
+    const labelRackT = createTextSprite('ラック →', '#4f46e5');
+    labelRackT.position.set(-26, mechY + pinionRadius + 6, 12);
+    scene.add(labelRackT);
+
+    // 下ラックのラベル
+    const labelRackB = createTextSprite('ラック →', '#7c3aed');
+    labelRackB.position.set(28, mechY - pinionRadius - 6, 12);
+    scene.add(labelRackB);
+
+    // ==========================================
+    // 6. アニメーション制御
+    // ==========================================
+    let isAuto = true;
+    let animTime = 0;
+    let slideRatio = 0;    // 0=閉、1=全開
+
+    const btnAuto   = document.getElementById('btn-auto');
+    const btnManual = document.getElementById('btn-manual');
+    const manualDiv = document.getElementById('manual-controls');
+    const slider    = document.getElementById('rotationSlider');
+
+    btnAuto.addEventListener('click', () => {
+        isAuto = true;
+        btnAuto.classList.remove('dimmed');
+        btnManual.classList.add('dimmed');
+        manualDiv.style.display = 'none';
+    });
+
+    btnManual.addEventListener('click', () => {
+        isAuto = false;
+        btnManual.classList.remove('dimmed');
+        btnAuto.classList.add('dimmed');
+        manualDiv.style.display = 'block';
+        slider.value = slideRatio * 100;
+    });
+
+    slider.addEventListener('input', (e) => {
+        if (!isAuto) {
+            slideRatio = e.target.value / 100;
+        }
+    });
+
+    document.getElementById('loading').style.display = 'none';
+
+    // ==========================================
+    // 7. アニメーションループ
+    // ==========================================
+    function animate() {
+        requestAnimationFrame(animate);
+        controls.update();
+
+        // --- 自動モード: 開→停止→閉→停止 のリアルな動き ---
+        if (isAuto) {
+            animTime += 0.012;
+            // 4秒周期で 開→停止→閉→停止 を繰り返す
+            // smoothstep で加減速をつけてリアルに
+            const cycle = animTime % (Math.PI * 2);
+            const raw = (Math.sin(cycle - Math.PI / 2) + 1) / 2; // 0→1→0
+            // smoothstep: よりなめらかな加減速
+            slideRatio = raw * raw * (3 - 2 * raw);
+        }
+
+        // ■ slideRatioを0〜1にクランプ（ドアが交差しない）
+        slideRatio = Math.max(0, Math.min(1, slideRatio));
+
+        // ■ 物理に基づく計算
+        const slideDistance = slideRatio * maxSlideDistance;
+
+        // ピニオン回転角: θ = s / r （ラックの移動量 ÷ ピニオン半径）
+        // これが「回転→直線」変換の核心公式
+        const pinionAngle = slideDistance / pinionRadius;
+
+        // ピニオンを回転（Z軸）
+        // 反時計回り(正方向)→ 上面の歯は左へ動く → 上ラック(左ドア)が左へ
+        //                   → 下面の歯は右へ動く → 下ラック(右ドア)が右へ
+        pinionMesh.rotation.z = pinionAngle;
+
+        // 上ラック → 左に移動（左ドアに接続）
+        rackTopMesh.position.x = -slideDistance;
+
+        // 下ラック → 右に移動（右ドアに接続）
+        rackBotMesh.position.x = slideDistance;
+
+        // ドアの位置更新
+        // 閉じた状態(slide=0): 左ドア中心=-doorWidth/2, 右ドア中心=+doorWidth/2
+        // → ドアの縁同士が中央(x=0)でぴったり合う
+        // 開いた状態(slide=max): さらにslideDistance分だけ外側にスライド
+        doorLGroup.position.x = -doorWidth / 2 - slideDistance;
+        doorRGroup.position.x =  doorWidth / 2 + slideDistance;
+
+        // 接続バーの更新（ラックからドアへ垂直に降りる棒）
+        connL.position.set(
+            -doorWidth / 2 - slideDistance + 5,
+            mechY + pinionRadius + rackGap - 12,
+            0
+        );
+        connR.position.set(
+            doorWidth / 2 + slideDistance - 5,
+            mechY - pinionRadius - rackGap + 12,
+            0
+        );
+
+        // ラベルもラックについていく
+        labelRackT.position.x = -slideDistance - 26;
+        labelRackB.position.x = slideDistance + 28;
+
+        renderer.render(scene, camera);
+    }
+    animate();
+
+    // --- リサイズ対応 ---
+    window.addEventListener('resize', () => {
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        camera.aspect = container.clientWidth / container.clientHeight;
+        camera.updateProjectionMatrix();
+    });
+});
 </script>
 </body>
 </html>
