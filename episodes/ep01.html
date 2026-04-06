@@ -6,27 +6,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>第1回：メリーゴーランドの構造 — 3Dからくり図鑑</title>
 
-    <!-- ★ 共通スタイル（style.cssを読み込む） -->
     <link rel="stylesheet" href="../assets/style.css">
 
-    <!-- Three.js ライブラリ（3D表示に使うツール） -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/exporters/GLTFExporter.js"></script>
 </head>
 
 <body>
     <div class="page-wrapper">
 
-        <!-- ========== ヘッダー ========== -->
         <div class="page-title">
             <h1>3Dからくり図鑑 🎠</h1>
             <p class="subtitle-badge">第1回：メリーゴーランドの<ruby>構造<rt>こうぞう</rt></ruby>（カム<ruby>機構<rt>きこう</rt></ruby>）</p>
         </div>
 
-        <!-- ========== 3Dビューアーカード ========== -->
         <div class="viewer-card">
 
-            <!-- コントロールバー -->
             <div class="control-bar">
                 <div style="display:flex; gap:0.75rem;">
                     <button id="btn-auto" class="btn-pop btn-auto">
@@ -34,6 +30,9 @@
                     </button>
                     <button id="btn-manual" class="btn-pop btn-manual dimmed">
                         <span>🖐️</span> 手動操作
+                    </button>
+                    <button id="btn-export" class="btn-pop" style="background-color:#8b5cf6; color:white;">
+                        <span>💾</span> GLB保存
                     </button>
                 </div>
 
@@ -43,22 +42,18 @@
                 </div>
             </div>
 
-            <!-- キャンバス -->
             <div id="canvas-container">
                 <div id="loading">読み込み中...</div>
             </div>
 
-            <!-- ヒント -->
             <div class="canvas-hints">
                 <span>👆 ドラッグで視点を回転</span>
                 <span>🔍 スクロールでズーム</span>
             </div>
         </div>
 
-        <!-- ========== 解説グリッド ========== -->
         <div class="info-grid">
 
-            <!-- ふきだし：なぜ動くの？ -->
             <div class="speech-bubble">
                 <h2><span>🔍</span> どうして上下に動くの？</h2>
                 <p>
@@ -73,7 +68,6 @@
                 </p>
             </div>
 
-            <!-- チェックリスト：観察ポイント -->
             <div class="checklist-card">
                 <span class="deco-icon">⚙️</span>
                 <h3><ruby>観察<rt>かんさつ</rt></ruby>ポイント</h3>
@@ -97,7 +91,6 @@
             </div>
         </div>
 
-        <!-- ========== 大人向けコラム（折りたたみ） ========== -->
         <details class="adult-column">
             <summary>
                 <span>🔧</span>
@@ -133,7 +126,6 @@
             </div>
         </details>
 
-        <!-- ========== ナビゲーション ========== -->
         <nav class="episode-nav" style="display: flex; flex-direction: column; align-items: center; gap: 1rem;">
             <p class="nav-next-teaser">次回：🚪 自動ドアの構造</p>
             <div style="display: flex; gap: 2rem; width: 100%; justify-content: center; align-items: center;">
@@ -142,10 +134,7 @@
             </div>
         </nav>
 
-    </div><!-- /page-wrapper -->
-
-    <!-- ========== Three.js スクリプト ========== -->
-    <script>
+    </div><script>
         document.addEventListener('DOMContentLoaded', () => {
 
             // ==========================================
@@ -381,6 +370,38 @@
                 renderer.render(scene, camera);
             }
             animate();
+
+            // ==========================================
+            // 4. GLBエクスポート機能（追加部分）
+            // ==========================================
+            const btnExport = document.getElementById('btn-export');
+            btnExport.addEventListener('click', () => {
+                const exporter = new THREE.GLTFExporter();
+                
+                // オプション設定（binary: true で .glb、false で .gltf）
+                const options = { binary: true };
+
+                // 書き出す対象を配列で指定（ライトやカメラは含めない）
+                exporter.parse([carouselGroup, baseMesh, camMesh], function (gltf) {
+                    
+                    // バイナリデータをBlobに変換
+                    const blob = new Blob([gltf], { type: 'application/octet-stream' });
+                    const url = URL.createObjectURL(blob);
+                    
+                    // 隠しリンクを作って自動クリック（ダウンロード実行）
+                    const link = document.createElement('a');
+                    link.style.display = 'none';
+                    link.href = url;
+                    link.download = 'merry-go-round.glb'; // 保存ファイル名
+                    document.body.appendChild(link);
+                    link.click();
+                    
+                    // メモリの解放
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(url);
+                    
+                }, options);
+            });
 
             window.addEventListener('resize', () => {
                 renderer.setSize(container.clientWidth, container.clientHeight);
