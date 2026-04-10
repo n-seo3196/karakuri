@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,19 +9,406 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 </head>
-<body>
-<div class="page-wrapper">
 
-    <!-- ========== ヘッダー ========== -->
-    <div class="page-title">
+<body>
+    <div class="page-wrapper">
+
+        <!-- ========== ヘッダー ========== -->
+        <div class="page-title">
             <h1>3Dからくり図鑑 🏗️</h1>
             <p class="subtitle-badge">第4回：エスカレーターの<ruby>構造<rt>こうぞう</rt></ruby>（無端チェーン<ruby>機構<rt>きこう</rt></ruby>）</p>
         </div>
 
-    <!-- ========== 3Dビューアーカード ========== -->
-    <div class="viewer-card">
-         <p class="subtitle-badge"> 　　　　　　　　　　　　　　　　　　　　　　　　　　準備中...</p>
-    </div>    
-</script>
+        <!-- ========== 3Dビューアーカード ========== -->
+        <div class="viewer-card">
+
+            <div class="control-bar" style="flex-direction: column; align-items: stretch; gap: 1rem;">
+                <div style="display:flex; gap:0.75rem; justify-content: center;">
+                    <button id="btn-auto" class="btn-pop btn-auto">
+                        <span>▶️</span> 自動回転
+                    </button>
+                    <button id="btn-manual" class="btn-pop btn-manual dimmed">
+                        <span>🖐️</span> 手動操作
+                    </button>
+                </div>
+
+                <div class="manual-controls" id="manual-controls" style="display:none; text-align: center;">
+                    <p class="slider-label">スライダーで時間を進める</p>
+                    <input type="range" id="rotationSlider" min="0" max="1000" value="0">
+                </div>
+                
+                <!-- カメラ視点用ボタン -->
+                <div style="display:flex; gap:0.5rem; justify-content:center; background: #f1f5f9; padding: 0.75rem; border-radius: 0.75rem;">
+                    <button id="cam-front" class="btn-pop">正面から</button>
+                    <button id="cam-side" class="btn-pop dimmed">横から（レール構造）</button>
+                </div>
+            </div>
+
+            <!-- キャンバス -->
+            <div id="canvas-container">
+                <div id="loading">読み込み中...</div>
+            </div>
+
+            <div class="canvas-hints">
+                <span>👆 ドラッグで視点を回転</span>
+                <span>🔍 スクロールでズーム</span>
+            </div>
+        </div>
+
+        <!-- ========== 解説グリッド ========== -->
+        <div class="info-grid">
+
+            <div class="speech-bubble">
+                <h2><span>🔍</span> どうしてステップが<ruby>傾<rt>かたむ</rt></ruby>かないの？</h2>
+                <p>
+                    エスカレーターのステップ（<ruby>踏<rt>ふ</rt></ruby>み<ruby>板<rt>いた</rt></ruby>）を<ruby>横<rt>よこ</rt></ruby>から<ruby>見<rt>み</rt></ruby>ると、<strong><ruby>前<rt>まえ</rt></ruby>と<ruby>後<rt>うし</rt></ruby>ろに２つの<ruby>車輪<rt>しゃりん</rt></ruby></strong>がついています。<br><br>
+                    <ruby>実<rt>じつ</rt></ruby>はエスカレーターの<ruby>中<rt>なか</rt></ruby>には、<ruby>前<rt>まえ</rt></ruby>の<ruby>車輪<rt>しゃりん</rt></ruby>が<ruby>走<rt>はし</rt></ruby>る<strong><span style="color:#3b82f6;"><ruby>青<rt>あお</rt></ruby>いレール（メインレール）</span></strong>と、<ruby>後<rt>うし</rt></ruby>ろの<ruby>車輪<rt>しゃりん</rt></ruby>が<ruby>走<rt>はし</rt></ruby>る<strong><span style="color:#10b981;"><ruby>緑<rt>みどり</rt></ruby>のレール（サブレール）</span></strong>の2<ruby>種類<rt>しゅるい</rt></ruby>のレールがかくれています。<br><br>
+                    <ruby>緑<rt>みどり</rt></ruby>のレールは、<ruby>青<rt>あお</rt></ruby>いレールを<ruby>正確<rt>せいかく</rt></ruby>に<strong>「<ruby>車輪<rt>しゃりん</rt></ruby>の<ruby>距離<rt>きょり</rt></ruby>」だけ<ruby>横<rt>よこ</rt></ruby>にずらした<ruby>形<rt>かたち</rt></ruby></strong>をしています。この2つのレールを<ruby>別々<rt>べつべつ</rt></ruby>に<ruby>走<rt>はし</rt></ruby>ることで、ステップは<ruby>坂道<rt>さかみち</rt></ruby>でも<ruby>常<rt>つね</rt></ruby>に<ruby>水平<rt>すいへい</rt></ruby>を<ruby>保<rt>たも</rt></ruby>つことができるのです！
+                </p>
+            </div>
+
+            <div class="checklist-card">
+                <span class="deco-icon">⚙️</span>
+                <h3><ruby>観察<rt>かんさつ</rt></ruby>ポイント</h3>
+                <ul>
+                    <li>
+                        <span class="num">1</span>
+                        <span>「横から」ボタンを押して、前と後ろの<ruby>車輪<rt>しゃりん</rt></ruby>が別々のレールを走る様子を<ruby>確認<rt>かくにん</rt></ruby>しよう。</span>
+                    </li>
+                    <li>
+                        <span class="num">2</span>
+                        <span>坂道にさしかかるとき、レールがどのように<ruby>高<rt>たか</rt></ruby>さを変えて水平をキープしているか見よう。</span>
+                    </li>
+                    <li>
+                        <span class="num">3</span>
+                        <span>一番下まで行ったステップは、どうやって裏側を通って戻っていくかな？</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ========== 大人向けコラム（ガイドライン準拠） ========== -->
+        <details class="adult-column">
+            <summary>
+                <span>🔧</span>
+                <span>もっと<ruby>技術<rt>ぎじゅつ</rt></ruby><ruby>解説<rt>かいせつ</rt></ruby></span>
+                <span class="toggle-icon">▼</span>
+            </summary>
+            <div class="column-body">
+                <h4>無端チェーン<ruby>機構<rt>きこう</rt></ruby>（Endless Chain）とは</h4>
+                <p>
+                    たくさんのパーツ（<ruby>今回<rt>こんかい</rt></ruby>はステップ）をチェーンで<ruby>数珠<rt>じゅず</rt></ruby>つなぎにして、<ruby>終<rt>お</rt></ruby>わりのない<ruby>輪<rt>わ</rt></ruby>っか（ループ）にしてぐるぐる<ruby>回<rt>まわ</rt></ruby>し<ruby>続<rt>つづ</rt></ruby>ける<ruby>仕組<rt>しく</rt></ruby>みです。
+                </p>
+
+                <h4>どんなところで<ruby>使<rt>つか</rt></ruby>われているの？</h4>
+                <p>
+                    <strong><ruby>空港<rt>くうこう</rt></ruby>の<ruby>動<rt>うご</rt></ruby>く<ruby>歩道<rt>ほどう</rt></ruby>（オートウォーク）</strong>や、<ruby>工場<rt>こうじょう</rt></ruby>で<ruby>荷物<rt>にもつ</rt></ruby>を<ruby>運<rt>はこ</rt></ruby>ぶ<strong>ベルトコンベア</strong>のほか、<strong><ruby>戦車<rt>せんしゃ</rt></ruby>やショベルカーのキャタピラ</strong>なども<ruby>同<rt>おな</rt></ruby>じように「<ruby>終<rt>お</rt></ruby>わりのない<ruby>輪<rt>わ</rt></ruby>」を<ruby>回転<rt>かいてん</rt></ruby>させて<ruby>進<rt>すす</rt></ruby>む<ruby>仕組<rt>しく</rt></ruby>みです。
+                </p>
+
+                <h4>ステップの<ruby>水平<rt>すいへい</rt></ruby><ruby>維持<rt>いじ</rt></ruby>の<ruby>計算式<rt>けいさんしき</rt></ruby></h4>
+                <div style="background:#fefce8; padding: 1rem; border: 2px solid #fde047; border-radius: 8px; margin-bottom: 1.5rem;">
+                    <strong><ruby>前輪<rt>ぜんりん</rt></ruby>のX<ruby>座標<rt>ざひょう</rt></ruby> − <ruby>車輪間<rt>しゃりんかん</rt></ruby>の<ruby>距離<rt>きょり</rt></ruby> ＝ <span style="color:#ef4444;"><ruby>後輪<rt>こうりん</rt></ruby>のX<ruby>座標<rt>ざひょう</rt></ruby>（<ruby>高<rt>たか</rt></ruby>さは<ruby>同<rt>おな</rt></ruby>じ！）</span></strong>
+                </div>
+
+                <h4>このモデルでの<ruby>計算<rt>けいさん</rt></ruby></h4>
+                <p>
+                    このモデルでは、ステップの<ruby>前輪<rt>ぜんりん</rt></ruby>と<ruby>後輪<rt>こうりん</rt></ruby>の<ruby>距離<rt>きょり</rt></ruby>（<ruby>軸間<rt>じくかん</rt></ruby><ruby>距離<rt>きょり</rt></ruby>）が<strong>24</strong>に<ruby>設定<rt>せってい</rt></ruby>されています。<br>
+                    <ruby>前輪<rt>ぜんりん</rt></ruby>が<ruby>走<rt>はし</rt></ruby>るメインレールと、<ruby>後輪<rt>こうりん</rt></ruby>が<ruby>走<rt>はし</rt></ruby>るサブレールの<ruby>軌道<rt>きどう</rt></ruby>は、<ruby>常<rt>つね</rt></ruby>にX<ruby>方向<rt>ほうこう</rt></ruby>に「24」ずれています。
+                </p>
+                <p style="font-size: 1.25rem; font-weight: 900; margin: 1rem 0;">
+                    <ruby>前輪<rt>ぜんりん</rt></ruby>のX − 24 = <span style="color:#ef4444;"><ruby>後輪<rt>こうりん</rt></ruby>のX</span>
+                </p>
+                <p style="margin-bottom: 2rem;">
+                    この<ruby>設計<rt>せっけい</rt></ruby>により、<ruby>前輪<rt>ぜんりん</rt></ruby>がどんな<ruby>高<rt>たか</rt></ruby>さ（Y<ruby>座標<rt>ざひょう</rt></ruby>）にいても、<ruby>後<rt>うし</rt></ruby>ろの<ruby>車輪<rt>しゃりん</rt></ruby>も<span style="color:#ef4444;">ピッタリ<ruby>同<rt>おな</rt></ruby>じ<ruby>高<rt>たか</rt></ruby>さ</span>のレールに<ruby>乗<rt>の</rt></ruby>るため、ステップは<ruby>絶対<rt>ぜったい</rt></ruby>に<ruby>傾<rt>かたむ</rt></ruby>かないのです。
+                </p>
+            </div>
+        </details>
+
+        <!-- ========== ナビゲーション ========== -->
+        <nav class="episode-nav" style="display: flex; flex-direction: column; align-items: center; gap: 1rem;">
+            <p class="nav-next-teaser">次回：🌂 傘の構造</p>
+            <div style="display: flex; gap: 2rem; width: 100%; justify-content: center; align-items: center;">
+                <a href="ep03.html">← 前の回</a>
+                <a href="../index.html" style="font-weight:bold;">🏠 目次へ</a>
+                <a href="ep05.html">次の回 →</a>
+            </div>
+        </nav>
+
+    </div>
+
+    <!-- ========== Three.js スクリプト ========== -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // ==========================================
+            // 1. Three.js セットアップ
+            // ==========================================
+            const container = document.getElementById('canvas-container');
+            const scene = new THREE.Scene();
+
+            const camera = new THREE.PerspectiveCamera(40, container.clientWidth / container.clientHeight, 1, 1500);
+            camera.position.set(-80, 80, 250);
+
+            const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            container.appendChild(renderer.domElement);
+
+            const controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.maxPolarAngle = Math.PI / 2 + 0.1;
+            controls.minDistance = 50;
+            controls.maxDistance = 600;
+            controls.target.set(0, 0, 0);
+
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+            scene.add(ambientLight);
+
+            const mainLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            mainLight.position.set(100, 150, 100);
+            mainLight.castShadow = true;
+            mainLight.shadow.mapSize.width = 1024;
+            mainLight.shadow.mapSize.height = 1024;
+            mainLight.shadow.camera.left = -100;
+            mainLight.shadow.camera.right = 100;
+            mainLight.shadow.camera.top = 100;
+            mainLight.shadow.camera.bottom = -100;
+            scene.add(mainLight);
+
+            const fillLight = new THREE.DirectionalLight(0xa5f3fc, 0.4);
+            fillLight.position.set(-100, -50, -100);
+            scene.add(fillLight);
+
+            // ==========================================
+            // 2. 軌道（レール）の定義
+            // ==========================================
+            // ホイールベース (前輪と後輪の距離) = 24
+            const L = 24;  
+            // 軌道のZ座標（奥行き）
+            const Z_MAIN = 14; 
+            const Z_SUB = 22;  // サブレールは外側に配置
+
+            // メインレールのコントロールポイント（CatmullRom用）
+            const cp = [
+                new THREE.Vector3( 90,  50, 0), // 右上ストレート
+                new THREE.Vector3( 50,  50, 0), // 右上カーブ始点
+                new THREE.Vector3( 20,  30, 0), // 下り傾斜途中
+                new THREE.Vector3(-20,   0, 0), // 下り傾斜途中
+                new THREE.Vector3(-50, -20, 0), // 左下カーブ始点
+                new THREE.Vector3(-90, -20, 0), // 左下ストレート
+                new THREE.Vector3(-110,-20, 0), // ターン上
+                new THREE.Vector3(-110,-40, 0), // ターン下（裏側へ）
+                new THREE.Vector3(-90, -40, 0), // 裏側 左ストレート
+                new THREE.Vector3(-50, -40, 0), // 裏側 上り始点
+                new THREE.Vector3(-20, -20, 0), // 裏側 上り途中
+                new THREE.Vector3( 20,  10, 0), // 裏側 上り途中
+                new THREE.Vector3( 50,  30, 0), // 裏側 右ストレート始点
+                new THREE.Vector3( 90,  30, 0), // 裏側 右ターン下
+                new THREE.Vector3( 110, 30, 0), // 裏側 右ターン下
+                new THREE.Vector3( 110, 50, 0)  // ターン上（一番上に戻る）
+            ];
+
+            const mainPath = new THREE.CatmullRomCurve3(cp, true, 'centripetal', 0.6);
+            
+            // TubeGeometryでレールを実体化
+            const mainMat = new THREE.MeshStandardMaterial({ color: 0x3b82f6, roughness: 0.3, metalness: 0.2 });
+            const subMat = new THREE.MeshStandardMaterial({ color: 0x10b981, roughness: 0.3, metalness: 0.2 });
+
+            // メインレール（手前と奥の両サイドに敷く）
+            const trackGeo = new THREE.TubeGeometry(mainPath, 200, 1.5, 8, true);
+            const mainTrackFront = new THREE.Mesh(trackGeo, mainMat);
+            mainTrackFront.position.z = Z_MAIN;
+            mainTrackFront.castShadow = true;
+            mainTrackFront.receiveShadow = true;
+            scene.add(mainTrackFront);
+
+            const mainTrackBack = new THREE.Mesh(trackGeo, mainMat);
+            mainTrackBack.position.z = -Z_MAIN;
+            mainTrackBack.castShadow = true;
+            mainTrackBack.receiveShadow = true;
+            scene.add(mainTrackBack);
+
+            // サブレール（メインレールより -L だけ X方向にずらす）
+            const subTrackGeo = trackGeo.clone();
+            subTrackGeo.translate(-L, 0, 0); // X方向にずらす！ これが水平を保つ秘訣！
+            
+            const subTrackFront = new THREE.Mesh(subTrackGeo, subMat);
+            subTrackFront.position.z = Z_SUB;
+            subTrackFront.castShadow = true;
+            subTrackFront.receiveShadow = true;
+            scene.add(subTrackFront);
+
+            const subTrackBack = new THREE.Mesh(subTrackGeo, subMat);
+            subTrackBack.position.z = -Z_SUB;
+            subTrackBack.castShadow = true;
+            subTrackBack.receiveShadow = true;
+            scene.add(subTrackBack);
+
+            // 側面のガラスフレーム（機構が見えるように半透明）
+            const glassGeo = new THREE.Shape();
+            const pts = mainPath.getPoints(100);
+            glassGeo.moveTo(pts[0].x, pts[0].y);
+            pts.forEach(p => glassGeo.lineTo(p.x, p.y));
+            const glassExtrude = new THREE.ExtrudeGeometry(glassGeo, { depth: 2, bevelEnabled: false });
+            glassExtrude.center(); // 中心座標合わせのために一応
+
+            const glassMat = new THREE.MeshPhysicalMaterial({
+                color: 0xe2e8f0, transparent: true, opacity: 0.2, roughness: 0.1, metalness: 0.1, depthWrite: false
+            });
+            const glassFront = new THREE.Mesh(glassExtrude, glassMat);
+            // 押し出しのZ位置を手動調整
+            glassFront.geometry.computeBoundingBox();
+            glassFront.position.set(0, 5, Z_SUB + 5); 
+            scene.add(glassFront);
+
+            // ==========================================
+            // 3. ステップ（踏み板）の生成
+            // ==========================================
+            const numSteps = 16;  
+            const steps = [];
+
+            const stepGroupTemplate = new THREE.Group();
+
+            // 踏み板部分
+            const stepBody = new THREE.Mesh(
+                new THREE.BoxGeometry(L + 6, 8, Z_MAIN * 2 - 4),
+                new THREE.MeshStandardMaterial({ color: 0x64748b, roughness: 0.6 })
+            );
+            // ステップの基準点(0,0,0)が「前輪の軸」になるように調整
+            // 後輪はX方向に -L の位置にあるので、中心は -L/2 になる
+            stepBody.position.set(-L / 2, -4, 0);
+            stepBody.castShadow = true;
+            stepBody.receiveShadow = true;
+            stepGroupTemplate.add(stepBody);
+
+            // ステップ表面のシマシマ模様（クシ板を表現）
+            const stepTop = new THREE.Mesh(
+                new THREE.BoxGeometry(L + 4, 1, Z_MAIN * 2 - 6),
+                new THREE.MeshStandardMaterial({ color: 0x94a3b8, roughness: 0.8 })
+            );
+            stepTop.position.set(-L / 2, 0.5, 0);
+            stepGroupTemplate.add(stepTop);
+
+            // 前輪（青） - メインレール用
+            const wheelGeo = new THREE.CylinderGeometry(3, 3, 2, 16);
+            wheelGeo.rotateX(Math.PI / 2);
+            const wheelMatM = new THREE.MeshStandardMaterial({ color: 0x3b82f6 });
+            const wFrontR = new THREE.Mesh(wheelGeo, wheelMatM);
+            wFrontR.position.set(0, 0, Z_MAIN);
+            const wFrontL = wFrontR.clone();
+            wFrontL.position.set(0, 0, -Z_MAIN);
+            stepGroupTemplate.add(wFrontR, wFrontL);
+
+            // 後輪（緑） - サブレール用
+            const wheelMatS = new THREE.MeshStandardMaterial({ color: 0x10b981 });
+            const wRearR = new THREE.Mesh(wheelGeo, wheelMatS);
+            wRearR.position.set(-L, 0, Z_SUB);
+            const wRearL = wRearR.clone();
+            wRearL.position.set(-L, 0, -Z_SUB);
+            stepGroupTemplate.add(wRearR, wRearL);
+
+            // 全ステップの複製配置
+            for (let i = 0; i < numSteps; i++) {
+                const s = stepGroupTemplate.clone();
+                scene.add(s);
+                steps.push({
+                    mesh: s,
+                    offset: i / numSteps
+                });
+            }
+
+            // ==========================================
+            // 4. アニメーション制御
+            // ==========================================
+            let isAuto = true;
+            let currentT = 0; // 0.0 ~ 1.0 (パス上の進捗)
+
+            const btnAuto = document.getElementById('btn-auto');
+            const btnManual = document.getElementById('btn-manual');
+            const manualDiv = document.getElementById('manual-controls');
+            const slider = document.getElementById('rotationSlider');
+
+            // カメラ視点制御
+            const btnFront = document.getElementById('cam-front');
+            const btnSide = document.getElementById('cam-side');
+
+            btnFront.addEventListener('click', () => {
+                btnFront.classList.remove('dimmed');
+                btnSide.classList.add('dimmed');
+                // アニメーションでカメラ移動できればベストですが簡単に再設定
+                camera.position.set(-80, 80, 250);
+                controls.target.set(0,0,0);
+            });
+
+            btnSide.addEventListener('click', () => {
+                btnSide.classList.remove('dimmed');
+                btnFront.classList.add('dimmed');
+                camera.position.set(0, 10, 300); // 真正面横から
+                controls.target.set(0, 10, 0);
+            });
+
+            btnAuto.addEventListener('click', () => {
+                isAuto = true;
+                btnAuto.classList.remove('dimmed');
+                btnManual.classList.add('dimmed');
+                manualDiv.style.display = 'none';
+            });
+
+            btnManual.addEventListener('click', () => {
+                isAuto = false;
+                btnManual.classList.remove('dimmed');
+                btnAuto.classList.add('dimmed');
+                manualDiv.style.display = 'block';
+                slider.value = (currentT * 1000) % 1000;
+            });
+
+            slider.addEventListener('input', (e) => {
+                if (!isAuto) {
+                    currentT = parseFloat(e.target.value) / 1000;
+                }
+            });
+
+            document.getElementById('loading').style.display = 'none';
+
+            function renderLoop() {
+                requestAnimationFrame(renderLoop);
+                controls.update();
+
+                if (isAuto) {
+                    currentT -= 0.0015; // 逆向きに動かすなら -
+                    if (currentT < 0) currentT += 1;
+                }
+
+                // 各ステップの位置を更新
+                steps.forEach(step => {
+                    // 個別の進捗度
+                    let t = (currentT + step.offset) % 1.0;
+                    if (t < 0) t += 1.0;
+
+                    // メインレールの座標を取得
+                    const pos = mainPath.getPointAt(t);
+                    
+                    // 【最大のからくりポイント】
+                    // 前輪はメインレールに乗り、後輪はXに-L、Yに0の物理的相対位置に固定される。
+                    // サブレールはメインレールを丸ごとXに-Lずらした形状なので、
+                    // 後輪は絶対にサブレールの上にピッタリ乗ることになり、ステップは完璧な水平を保つ。
+                    step.mesh.position.copy(pos);
+                    // step.mesh.rotation は常にゼロ！これによってパテルノスター式の水平維持が実現
+                });
+
+                renderer.render(scene, camera);
+            }
+            renderLoop();
+
+            // リサイズ対応
+            window.addEventListener('resize', () => {
+                renderer.setSize(container.clientWidth, container.clientHeight);
+                camera.aspect = container.clientWidth / container.clientHeight;
+                camera.updateProjectionMatrix();
+            });
+        });
+    </script>
 </body>
 </html>
