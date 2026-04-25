@@ -200,8 +200,12 @@
 
         // グリップ
         const gripY = CROWN_Y - SHAFT_LEN + 5;
-        scene.add(Object.assign(new THREE.Mesh(new THREE.CylinderGeometry(3.5, 2.5, 20, 12), mHandle), { position: new THREE.Vector3(0, gripY, 0) }));
-        scene.add(Object.assign(new THREE.Mesh(new THREE.SphereGeometry(4, 12, 12), mHandle), { position: new THREE.Vector3(0, gripY - 13, 0) }));
+        const grip = new THREE.Mesh(new THREE.CylinderGeometry(3.5, 2.5, 20, 12), mHandle);
+        grip.position.set(0, gripY, 0);
+        scene.add(grip);
+        const gripBall = new THREE.Mesh(new THREE.SphereGeometry(4, 12, 12), mHandle);
+        gripBall.position.set(0, gripY - 13, 0);
+        scene.add(gripBall);
 
         // 下ろくろ（可動リング）
         const lowerRunner = new THREE.Mesh(new THREE.TorusGeometry(4.5, 2.2, 8, 24), mRunner);
