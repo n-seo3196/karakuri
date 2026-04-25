@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,42 +8,30 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 </head>
-
 <body>
     <div class="page-wrapper">
 
-        <!-- ========== ヘッダー ========== -->
         <div class="page-title">
             <h1>3Dからくり図鑑 🌂</h1>
             <p class="subtitle-badge">第5回：傘の<ruby>構造<rt>こうぞう</rt></ruby>（パンタグラフ<ruby>機構<rt>きこう</rt></ruby>）</p>
         </div>
 
-        <!-- ========== 3Dビューアーカード ========== -->
         <div class="viewer-card">
-
             <div class="control-bar" style="flex-direction: column; align-items: stretch; gap: 1rem;">
                 <div style="display:flex; gap:0.75rem; justify-content: center;">
                     <button id="btn-auto" class="btn-pop btn-auto">
-                        <span>▶️</span> 自動アニメ
+                        <span>▶️</span> 自動開閉
                     </button>
                     <button id="btn-manual" class="btn-pop btn-manual dimmed">
                         <span>🖐️</span> 手動操作
                     </button>
                 </div>
-
                 <div class="manual-controls" id="manual-controls" style="display:none; text-align: center;">
                     <p class="slider-label">スライダーで傘を開く</p>
                     <input type="range" id="openSlider" min="0" max="100" value="0">
                 </div>
-
-                <!-- 傘の開閉ボタン -->
-                <div style="display:flex; gap:0.5rem; justify-content:center; background: #f1f5f9; padding: 0.75rem; border-radius: 0.75rem;">
-                    <button id="btn-close" class="btn-pop dimmed">🌂 閉じる</button>
-                    <button id="btn-open" class="btn-pop">☂️ 開く</button>
-                </div>
             </div>
 
-            <!-- キャンバス -->
             <div id="canvas-container">
                 <div id="loading">読み込み中...</div>
             </div>
@@ -55,15 +42,13 @@
             </div>
         </div>
 
-        <!-- ========== 解説グリッド ========== -->
         <div class="info-grid">
-
             <div class="speech-bubble">
-                <h2><span>🔍</span> どうして一瞬で<ruby>広<rt>ひろ</rt></ruby>がるの？</h2>
+                <h2><span>🔍</span> どうして一<ruby>瞬<rt>しゅん</rt></ruby>で<ruby>広<rt>ひろ</rt></ruby>がるの？</h2>
                 <p>
-                    傘を開くとき、持ち手のボタンを一押しするだけで、たくさんの骨が一気に広がるね。<br><br>
-                    実は傘の骨には「<strong>パンタグラフ</strong>」というしくみが使われているんだ。<br><br>
-                    <strong>中央の棒を下にスライドさせると、その動きが骨全体に一気に伝わって</strong>、すべての骨が同時に外側へ広がる。これが一瞬で開く秘密だよ！
+                    傘を開くとき、ボタンを一押しするだけでたくさんの骨が一気に広がるね。<br><br>
+                    傘の中央の棒には<strong>「ランナー」という<ruby>赤<rt>あか</rt></ruby>いリング</strong>がついていて、これが棒を<strong>下にスライド</strong>する。<br><br>
+                    するとランナーにつながった<strong><ruby>補助骨<rt>ほじょぼね</rt></ruby>（ストラット）が主骨を外側に押し上げて</strong>、一気に広がる。これがパンタグラフ機構のひみつだよ！
                 </p>
             </div>
 
@@ -73,21 +58,20 @@
                 <ul>
                     <li>
                         <span class="num">1</span>
-                        <span>「開く」ボタンを押して、<ruby>中央<rt>ちゅうおう</rt></ruby>のスライダー（<ruby>赤<rt>あか</rt></ruby>い部品）が下に動くと、骨が<ruby>外側<rt>そとがわ</rt></ruby>に広がるのを見てみよう！</span>
+                        <span><ruby>赤<rt>あか</rt></ruby>いリング（ランナー）が棒を下にスライドするのを見てみよう！</span>
                     </li>
                     <li>
                         <span class="num">2</span>
-                        <span>骨の<ruby>途中<rt>とちゅう</rt></ruby>にある小さい部品（リブ）が傘布を持ち上げているのを確認しよう。</span>
+                        <span>青い<ruby>補助骨<rt>ほじょぼね</rt></ruby>がランナーと主骨の<ruby>真<rt>ま</rt></ruby>ん中を<ruby>繋<rt>つな</rt></ruby>いでいるのを<ruby>確認<rt>かくにん</rt></ruby>しよう。</span>
                     </li>
                     <li>
                         <span class="num">3</span>
-                        <span>手動操作でスライダーをゆっくり動かして、どのパーツがどう動くか観察しよう。</span>
+                        <span>手動操作でスライダーをゆっくり動かして、どのパーツがどう連動するか観察しよう。</span>
                     </li>
                 </ul>
             </div>
         </div>
 
-        <!-- ========== 技術解説（ガイドライン準拠） ========== -->
         <details class="adult-column">
             <summary>
                 <span>🔧</span>
@@ -95,37 +79,29 @@
                 <span class="toggle-icon">▼</span>
             </summary>
             <div class="column-body">
-
                 <h4>パンタグラフ<ruby>機構<rt>きこう</rt></ruby>とは</h4>
                 <p>
-                    「パンタグラフ」は、<strong><ruby>菱形<rt>ひしがた</rt></ruby>（ひし形）のリンクが変形する</strong>しくみです。菱形の一辺を押すと、向かい合う辺が同じだけ動く性質を利用しています。
-                    電車のパンタグラフ（屋根の上についているジグザグの部品）も同じしくみです。
+                    複数のリンク（棒）が<ruby>菱形<rt>ひしがた</rt></ruby>を作り、一点を動かすと全体が連動して広がるしくみです。傘の場合、ランナーが「入力」、骨の先端の動きが「出力」になります。
                 </p>
-
                 <h4>どんなところで<ruby>使<rt>つか</rt></ruby>われているの？</h4>
                 <p>
-                    <strong>電車のパンタグラフ</strong>（電気をとる屋根の装置）、<strong>折りたたみ式の物干し竿</strong>、<strong>ハサミジャッキ</strong>（車のタイヤ交換に使う持ち上げ道具）、<strong>工場のロボットアーム</strong>なども、リンクが伸び縮みするパンタグラフ機構を使っています。
+                    <strong>電車のパンタグラフ</strong>（屋根の上の電気集電装置）、<strong>ハサミジャッキ</strong>（車のタイヤ交換用持ち上げ器）、<strong>工場のロボットアーム</strong>などでも、同じリンク機構が活躍しています。
                 </p>
-
-                <h4>傘の開く<ruby>力<rt>ちから</rt></ruby>の<ruby>計算式<rt>けいさんしき</rt></ruby></h4>
+                <h4>傘の<ruby>開<rt>ひら</rt></ruby>く<ruby>力<rt>ちから</rt></ruby>の<ruby>計算式<rt>けいさんしき</rt></ruby></h4>
                 <div style="background:#fefce8; padding: 1rem; border: 2px solid #fde047; border-radius: 8px; margin-bottom: 1.5rem;">
-                    <strong>スライダーの<ruby>移動<rt>いどう</rt></ruby>距離 × リンクの<ruby>倍率<rt>ばいりつ</rt></ruby> ＝ 骨の<ruby>先端<rt>せんたん</rt></ruby>の<ruby>移動<rt>いどう</rt></ruby>距離</strong>
+                    <strong>ランナーの<ruby>移動<rt>いどう</rt></ruby>距離 × リンクの<ruby>倍率<rt>ばいりつ</rt></ruby> ＝ 骨の<ruby>先端<rt>せんたん</rt></ruby>の<ruby>移動<rt>いどう</rt></ruby>距離</strong>
                 </div>
-
                 <h4>このモデルでの<ruby>計算<rt>けいさん</rt></ruby></h4>
-                <p>
-                    このモデルでは、中央のスライダーが「<strong>40</strong>」動くと、リンク機構の倍率が約<strong>2.5倍</strong>になり、骨の先端は「<strong>40 × 2.5 = 100</strong>」ほど外側に広がります。
-                </p>
+                <p>このモデルではランナーが「<strong>45</strong>」下に動くと、骨の先端は約<strong>2.2倍</strong>の距離を外側に広がります。</p>
                 <p style="font-size: 1.25rem; font-weight: 900; margin: 1rem 0;">
-                    スライダー移動 40 × 2.5 ＝ <span style="color:#ef4444;">骨の先端が 100 広がる！</span>
+                    ランナー移動 45 × 2.2 ＝ <span style="color:#ef4444;">骨の先端が 約99 広がる！</span>
                 </p>
                 <p style="margin-bottom: 2rem;">
-                    つまり、ほんの少しの力で中央棒を押すだけで、骨全体が一気に大きく広がる。これが「<ruby>一瞬<rt>いっしゅん</rt></ruby>で広がる」ひみつです！
+                    わずかなランナーの動きで骨全体が一気に大きく広がる、これが一<ruby>瞬<rt>しゅん</rt></ruby>で開くひみつです！
                 </p>
             </div>
         </details>
 
-        <!-- ========== ナビゲーション ========== -->
         <nav class="episode-nav" style="display: flex; flex-direction: column; align-items: center; gap: 1rem;">
             <p class="nav-next-teaser">次回：🔒 鍵の構造</p>
             <div style="display: flex; gap: 2rem; width: 100%; justify-content: center; align-items: center;">
@@ -134,378 +110,325 @@
                 <a href="ep06.html">次の回 →</a>
             </div>
         </nav>
-
     </div>
 
-    <!-- ========== Three.js スクリプト ========== -->
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', () => {
 
-            // ==========================================
-            // 1. Three.js セットアップ
-            // ==========================================
-            const container = document.getElementById('canvas-container');
-            const scene = new THREE.Scene();
-            scene.background = new THREE.Color(0xf0f4ff);
+        // =============================================
+        // 1. Three.js セットアップ
+        // =============================================
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0xf0f4ff);
 
-            const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 1, 2000);
-            camera.position.set(0, 80, 220);
+        const camera = new THREE.PerspectiveCamera(40, container.clientWidth / container.clientHeight, 1, 2000);
+        camera.position.set(130, 100, 160);
 
-            const renderer = new THREE.WebGLRenderer({ antialias: true });
-            renderer.setSize(container.clientWidth, container.clientHeight);
-            renderer.shadowMap.enabled = true;
-            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-            container.appendChild(renderer.domElement);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        container.appendChild(renderer.domElement);
 
-            const controls = new THREE.OrbitControls(camera, renderer.domElement);
-            controls.enableDamping = true;
-            controls.dampingFactor = 0.05;
-            controls.target.set(0, 20, 0);
-            controls.minDistance = 80;
-            controls.maxDistance = 500;
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        controls.target.set(0, 45, 0);
+        controls.minDistance = 80;
+        controls.maxDistance = 500;
 
-            // ライト
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
-            scene.add(ambientLight);
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.75);
+        scene.add(ambientLight);
+        const mainLight = new THREE.DirectionalLight(0xffffff, 0.9);
+        mainLight.position.set(80, 150, 80);
+        mainLight.castShadow = true;
+        scene.add(mainLight);
+        const fillLight = new THREE.DirectionalLight(0xbae6fd, 0.4);
+        fillLight.position.set(-80, 20, -80);
+        scene.add(fillLight);
 
-            const mainLight = new THREE.DirectionalLight(0xffffff, 0.9);
-            mainLight.position.set(80, 150, 80);
-            mainLight.castShadow = true;
-            mainLight.shadow.mapSize.width = 1024;
-            mainLight.shadow.mapSize.height = 1024;
-            mainLight.shadow.camera.near = 0.1;
-            mainLight.shadow.camera.far = 500;
-            mainLight.shadow.camera.left = -150;
-            mainLight.shadow.camera.right = 150;
-            mainLight.shadow.camera.top = 150;
-            mainLight.shadow.camera.bottom = -150;
-            scene.add(mainLight);
+        // =============================================
+        // 2. 傘のパラメータ
+        // =============================================
+        const NUM_RIBS     = 8;
+        const CROWN_Y      = 80;   // シャフト上端（クラウン）のY座標
+        const SHAFT_LEN    = 120;  // シャフト全長
+        const RIB_LEN      = 85;   // 主骨の長さ
+        const STRUT_ATTACH = 0.50; // 補助骨が主骨に繋がる位置（0=根元, 1=先端）
+        const BASE_STRUT_H = 1.0;  // ストラットgeometryの基準高さ（scale.yで調整）
 
-            const fillLight = new THREE.DirectionalLight(0xa5f3fc, 0.4);
-            fillLight.position.set(-80, -50, -80);
-            scene.add(fillLight);
+        // 開閉角度（主骨とシャフトのなす角 = 垂直下向きからの角度）
+        const CLOSED_ANGLE = 0.10; // ≈6° ほぼ閉じた状態
+        const OPEN_ANGLE   = 1.22; // ≈70° 大きく開いた状態
 
-            // ==========================================
-            // 2. 傘のパラメータ
-            // ==========================================
-            const NUM_RIBS = 8;           // 骨の本数
-            const SHAFT_HEIGHT = 120;     // 中央シャフトの高さ
-            const RIB_LENGTH = 90;        // 主骨の長さ
-            const STRUT_LENGTH = 55;      // 補助骨の長さ
-            const TOP_Y = 80;             // トップキャップのY位置（シャフト上端）
-            const RUNNER_CLOSED_Y = 40;   // スライダー（ランナー）の閉じ時Y位置
-            const RUNNER_OPEN_Y = 0;      // スライダーの開き時Y位置
+        // ランナーY座標
+        const RUNNER_CLOSED_Y = 62; // 閉じ時：クラウン近く
+        const RUNNER_OPEN_Y   = 17; // 開き時：シャフト下方
 
-            // マテリアル
-            const shaftMat = new THREE.MeshStandardMaterial({ color: 0x475569, roughness: 0.3, metalness: 0.6 });
-            const ribMat = new THREE.MeshStandardMaterial({ color: 0x1e40af, roughness: 0.4, metalness: 0.4 });
-            const strutMat = new THREE.MeshStandardMaterial({ color: 0x3b82f6, roughness: 0.5, metalness: 0.3 });
-            const runnerMat = new THREE.MeshStandardMaterial({ color: 0xef4444, roughness: 0.3, metalness: 0.4 });
-            const handleMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.5, metalness: 0.3 });
-            const fabricMat = new THREE.MeshStandardMaterial({
-                color: 0xf43f5e,
-                transparent: true,
-                opacity: 0.85,
-                side: THREE.DoubleSide,
-                roughness: 0.9
-            });
-            const topCapMat = new THREE.MeshStandardMaterial({ color: 0x94a3b8, roughness: 0.3, metalness: 0.6 });
-
-            // ==========================================
-            // 3. 傘の骨格を作る
-            // ==========================================
-
-            // 中央シャフト（棒）
-            const shaftGeo = new THREE.CylinderGeometry(2, 2, SHAFT_HEIGHT, 12);
-            const shaft = new THREE.Mesh(shaftGeo, shaftMat);
-            shaft.position.set(0, SHAFT_HEIGHT / 2 - 20, 0);
-            shaft.castShadow = true;
-            scene.add(shaft);
-
-            // 持ち手（グリップ）
-            const handleGeo = new THREE.CylinderGeometry(4, 3, 20, 12);
-            const handle = new THREE.Mesh(handleGeo, handleMat);
-            handle.position.set(0, -20, 0);
-            scene.add(handle);
-
-            // 持ち手の曲がり部分（小さな球）
-            const gripBallGeo = new THREE.SphereGeometry(4.5, 12, 12);
-            const gripBall = new THREE.Mesh(gripBallGeo, handleMat);
-            gripBall.position.set(0, -31, 0);
-            scene.add(gripBall);
-
-            // トップキャップ（先端の小さな飾り）
-            const topCapGeo = new THREE.CylinderGeometry(3.5, 2, 8, 12);
-            const topCap = new THREE.Mesh(topCapGeo, topCapMat);
-            topCap.position.set(0, TOP_Y + 4, 0);
-            scene.add(topCap);
-
-            // スライダー（ランナー）：中央棒を上下するリング
-            const runnerGeo = new THREE.TorusGeometry(5, 2.5, 8, 24);
-            const runner = new THREE.Mesh(runnerGeo, runnerMat);
-            runner.rotation.x = Math.PI / 2;
-            runner.position.set(0, RUNNER_CLOSED_Y, 0);
-            scene.add(runner);
-
-            // ==========================================
-            // 4. 骨（リブ・ストラット）の配置
-            // ==========================================
-            const ribs = [];      // 主骨グループ
-            const structs = [];   // 補助骨グループ
-            const fabricPanels = []; // 傘布パネル
-
-            for (let i = 0; i < NUM_RIBS; i++) {
-                const angle = (i / NUM_RIBS) * Math.PI * 2;
-
-                // 主骨（メインリブ）- シャフト頂点から外側に伸びる
-                const ribGroup = new THREE.Group();
-                ribGroup.rotation.y = angle;
-                scene.add(ribGroup);
-
-                // 主骨の棒（細い箱で表現）
-                const ribGeo = new THREE.BoxGeometry(2, 2, RIB_LENGTH);
-                const rib = new THREE.Mesh(ribGeo, ribMat);
-                rib.castShadow = true;
-                ribGroup.add(rib);
-
-                ribs.push(ribGroup);
-
-                // 補助骨（ストラット）- スライダーと主骨の中間を繋ぐ
-                const strutGroup = new THREE.Group();
-                strutGroup.rotation.y = angle;
-                scene.add(strutGroup);
-
-                const strutGeo = new THREE.BoxGeometry(1.5, 1.5, STRUT_LENGTH);
-                const strut = new THREE.Mesh(strutGeo, strutMat);
-                strut.castShadow = true;
-                strutGroup.add(strut);
-
-                structs.push(strutGroup);
-            }
-
-            // ==========================================
-            // 5. 傘布パネル（各骨の間を埋める三角形ポリゴン）
-            // ==========================================
-            // 傘布は骨に合わせて動く（openRatioで頂点を更新）
-            for (let i = 0; i < NUM_RIBS; i++) {
-                const geometry = new THREE.BufferGeometry();
-                // 頂点は updateFabric() で毎フレーム更新する
-                const positions = new Float32Array(9 * 4); // 4三角形分
-                geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-                const panel = new THREE.Mesh(geometry, fabricMat);
-                panel.castShadow = false;
-                scene.add(panel);
-                fabricPanels.push(panel);
-            }
-
-            // ==========================================
-            // 6. openRatio に応じてすべての骨を更新する関数
-            // ==========================================
-            // openRatio: 0.0 = 閉じた / 1.0 = 全開
-            function updateUmbrella(openRatio) {
-
-                // スライダーのY位置（閉じ→開で下に動く）
-                const runnerY = RUNNER_CLOSED_Y + (RUNNER_OPEN_Y - RUNNER_CLOSED_Y) * openRatio;
-                runner.position.y = runnerY;
-
-                // 骨の開き角度（0° = 垂直 / 最大 = 水平近く）
-                const maxRibAngle = Math.PI * 0.42; // 約75度
-                const ribAngle = maxRibAngle * openRatio;
-
-                for (let i = 0; i < NUM_RIBS; i++) {
-                    const angle = (i / NUM_RIBS) * Math.PI * 2;
-
-                    // ---- 主骨の計算 ----
-                    // 根元はTOP_Yから始まり、ribAngle分だけ斜め下外側に傾く
-                    const ribGroup = ribs[i];
-
-                    // 主骨の根元（ピボット）= トップキャップ位置
-                    const pivotY = TOP_Y;
-
-                    // 先端の位置
-                    const tipX = Math.sin(angle) * RIB_LENGTH * Math.sin(ribAngle);
-                    const tipZ = Math.cos(angle) * RIB_LENGTH * Math.sin(ribAngle);
-                    const tipY = pivotY - RIB_LENGTH * (1 - Math.cos(ribAngle));
-
-                    // 主骨グループの位置・回転
-                    // 骨の中心 = (ピボット + 先端) / 2
-                    const midX = (Math.sin(angle) * RIB_LENGTH * Math.sin(ribAngle)) / 2;
-                    const midY = pivotY - RIB_LENGTH * (1 - Math.cos(ribAngle)) / 2;
-                    const midZ = (Math.cos(angle) * RIB_LENGTH * Math.sin(ribAngle)) / 2;
-
-                    ribGroup.position.set(midX, midY, midZ);
-                    // 骨をピボットからtipに向ける（XZ平面の角度 + 傾き角度）
-                    ribGroup.rotation.set(0, -angle, ribAngle - Math.PI / 2);
-
-                    // ---- 補助骨の計算 ----
-                    // 補助骨はスライダー位置と主骨の中間点を繋ぐ
-                    const strutGroup = structs[i];
-
-                    // 主骨の中間点
-                    const ribMidX = tipX * 0.55;
-                    const ribMidY = pivotY - (pivotY - tipY) * 0.55;
-                    const ribMidZ = tipZ * 0.55;
-
-                    // スライダー位置（中央）
-                    const sliderX = Math.sin(angle) * 2.5;
-                    const sliderY = runnerY;
-                    const sliderZ = Math.cos(angle) * 2.5;
-
-                    // 補助骨の中心点
-                    const sMidX = (sliderX + ribMidX) / 2;
-                    const sMidY = (sliderY + ribMidY) / 2;
-                    const sMidZ = (sliderZ + ribMidZ) / 2;
-
-                    strutGroup.position.set(sMidX, sMidY, sMidZ);
-
-                    // スライダー→リブ中間へのベクトルから回転を求める
-                    const dir = new THREE.Vector3(ribMidX - sliderX, ribMidY - sliderY, ribMidZ - sliderZ).normalize();
-                    const up = new THREE.Vector3(0, 0, 1);
-                    const quat = new THREE.Quaternion().setFromUnitVectors(up, dir);
-                    strutGroup.quaternion.copy(quat);
-
-                    // ---- 傘布パネルの更新 ----
-                    const nextAngle = ((i + 1) / NUM_RIBS) * Math.PI * 2;
-
-                    const tip1X = Math.sin(angle) * RIB_LENGTH * Math.sin(ribAngle);
-                    const tip1Y = pivotY - RIB_LENGTH * (1 - Math.cos(ribAngle));
-                    const tip1Z = Math.cos(angle) * RIB_LENGTH * Math.sin(ribAngle);
-
-                    const tip2X = Math.sin(nextAngle) * RIB_LENGTH * Math.sin(ribAngle);
-                    const tip2Y = pivotY - RIB_LENGTH * (1 - Math.cos(ribAngle));
-                    const tip2Z = Math.cos(nextAngle) * RIB_LENGTH * Math.sin(ribAngle);
-
-                    // 中間点（少し内側・上方に傘らしいカーブを持たせる）
-                    const midFactor = 0.7;
-                    const dip = 8 * openRatio; // 開いたときに少し下がる（傘のカーブ）
-
-                    // 傘布の三角形（扇形を2三角形で近似）
-                    const positions = fabricPanels[i].geometry.attributes.position.array;
-
-                    // Triangle 1: 頂点(top), 先端1, 先端間中点
-                    positions[0] = 0;       positions[1] = pivotY;  positions[2] = 0;
-                    positions[3] = tip1X;   positions[4] = tip1Y;   positions[5] = tip1Z;
-                    positions[6] = tip1X * midFactor + tip2X * midFactor;
-                    positions[7] = tip1Y - dip;
-                    positions[8] = tip1Z * midFactor + tip2Z * midFactor;
-
-                    // Triangle 2: 頂点(top), 中点, 先端2
-                    positions[9]  = 0;      positions[10] = pivotY; positions[11] = 0;
-                    positions[12] = tip1X * midFactor + tip2X * midFactor;
-                    positions[13] = tip1Y - dip;
-                    positions[14] = tip1Z * midFactor + tip2Z * midFactor;
-                    positions[15] = tip2X;  positions[16] = tip2Y;  positions[17] = tip2Z;
-
-                    fabricPanels[i].geometry.attributes.position.needsUpdate = true;
-                    fabricPanels[i].geometry.computeVertexNormals();
-                }
-            }
-
-            // 初期状態（閉じた状態）
-            updateUmbrella(0);
-
-            // ==========================================
-            // 7. アニメーション制御
-            // ==========================================
-            let isAuto = true;
-            let openRatio = 0;
-            let animDir = 1;      // 1 = 開く, -1 = 閉じる
-            let waitFrames = 0;   // 待機フレーム数
-
-            const btnAuto = document.getElementById('btn-auto');
-            const btnManual = document.getElementById('btn-manual');
-            const manualDiv = document.getElementById('manual-controls');
-            const slider = document.getElementById('openSlider');
-            const btnOpen = document.getElementById('btn-open');
-            const btnClose = document.getElementById('btn-close');
-
-            btnAuto.addEventListener('click', () => {
-                isAuto = true;
-                btnAuto.classList.remove('dimmed');
-                btnManual.classList.add('dimmed');
-                manualDiv.style.display = 'none';
-            });
-
-            btnManual.addEventListener('click', () => {
-                isAuto = false;
-                btnManual.classList.remove('dimmed');
-                btnAuto.classList.add('dimmed');
-                manualDiv.style.display = 'block';
-                slider.value = Math.round(openRatio * 100);
-            });
-
-            slider.addEventListener('input', (e) => {
-                if (!isAuto) {
-                    openRatio = parseFloat(e.target.value) / 100;
-                    updateUmbrella(openRatio);
-                    syncOpenCloseButtons();
-                }
-            });
-
-            btnOpen.addEventListener('click', () => {
-                if (isAuto) return;
-                openRatio = 1.0;
-                updateUmbrella(openRatio);
-                slider.value = 100;
-                syncOpenCloseButtons();
-            });
-
-            btnClose.addEventListener('click', () => {
-                if (isAuto) return;
-                openRatio = 0.0;
-                updateUmbrella(openRatio);
-                slider.value = 0;
-                syncOpenCloseButtons();
-            });
-
-            function syncOpenCloseButtons() {
-                if (openRatio > 0.5) {
-                    btnOpen.classList.remove('dimmed');
-                    btnClose.classList.add('dimmed');
-                } else {
-                    btnClose.classList.remove('dimmed');
-                    btnOpen.classList.add('dimmed');
-                }
-            }
-
-            document.getElementById('loading').style.display = 'none';
-
-            // ==========================================
-            // 8. レンダーループ
-            // ==========================================
-            function renderLoop() {
-                requestAnimationFrame(renderLoop);
-                controls.update();
-
-                if (isAuto) {
-                    if (waitFrames > 0) {
-                        waitFrames--;
-                    } else {
-                        openRatio += animDir * 0.008;
-                        if (openRatio >= 1.0) {
-                            openRatio = 1.0;
-                            animDir = -1;
-                            waitFrames = 80; // 開いた状態で少し待つ
-                        } else if (openRatio <= 0.0) {
-                            openRatio = 0.0;
-                            animDir = 1;
-                            waitFrames = 40; // 閉じた状態で少し待つ
-                        }
-                        updateUmbrella(openRatio);
-                    }
-                }
-
-                renderer.render(scene, camera);
-            }
-            renderLoop();
-
-            // リサイズ対応
-            window.addEventListener('resize', () => {
-                renderer.setSize(container.clientWidth, container.clientHeight);
-                camera.aspect = container.clientWidth / container.clientHeight;
-                camera.updateProjectionMatrix();
-            });
+        // =============================================
+        // 3. マテリアル
+        // =============================================
+        const matShaft  = new THREE.MeshStandardMaterial({ color: 0x64748b, roughness: 0.3, metalness: 0.7 });
+        const matCrown  = new THREE.MeshStandardMaterial({ color: 0x94a3b8, roughness: 0.3, metalness: 0.6 });
+        const matHandle = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.5, metalness: 0.3 });
+        const matRib    = new THREE.MeshStandardMaterial({ color: 0x1e3a8a, roughness: 0.4, metalness: 0.5 });
+        const matStrut  = new THREE.MeshStandardMaterial({ color: 0x3b82f6, roughness: 0.5, metalness: 0.3 });
+        const matRunner = new THREE.MeshStandardMaterial({ color: 0xef4444, roughness: 0.3, metalness: 0.5 });
+        const matFabric = new THREE.MeshStandardMaterial({
+            color: 0xf43f5e, side: THREE.DoubleSide,
+            transparent: true, opacity: 0.88, roughness: 0.9
         });
+
+        // =============================================
+        // 4. 固定部品の作成
+        // =============================================
+
+        // シャフト（中央の棒）
+        const shaft = new THREE.Mesh(
+            new THREE.CylinderGeometry(1.8, 1.8, SHAFT_LEN, 12),
+            matShaft
+        );
+        shaft.position.y = CROWN_Y - SHAFT_LEN / 2;
+        shaft.castShadow = true;
+        scene.add(shaft);
+
+        // クラウン（上端の球）
+        const crown = new THREE.Mesh(new THREE.SphereGeometry(4, 12, 12), matCrown);
+        crown.position.y = CROWN_Y;
+        scene.add(crown);
+
+        // 先端のキャップ（石突き）
+        const tip = new THREE.Mesh(new THREE.ConeGeometry(1.5, 6, 8), matCrown);
+        tip.position.y = CROWN_Y + 6;
+        scene.add(tip);
+
+        // グリップ（持ち手）
+        const gripY = CROWN_Y - SHAFT_LEN - 6;
+        const grip = new THREE.Mesh(new THREE.CylinderGeometry(3.5, 2.5, 18, 12), matHandle);
+        grip.position.y = gripY;
+        scene.add(grip);
+        const gripBall = new THREE.Mesh(new THREE.SphereGeometry(4, 12, 12), matHandle);
+        gripBall.position.y = gripY - 12;
+        scene.add(gripBall);
+
+        // ランナー（スライドするリング）
+        const runner = new THREE.Mesh(
+            new THREE.TorusGeometry(4.5, 2.2, 8, 24),
+            matRunner
+        );
+        runner.rotation.x = Math.PI / 2;
+        runner.position.y = RUNNER_CLOSED_Y;
+        runner.castShadow = true;
+        scene.add(runner);
+
+        // =============================================
+        // 5. 主骨（リブ）とストラット（補助骨）の作成
+        // =============================================
+        const Y_UP = new THREE.Vector3(0, 1, 0);
+        const ribMeshes = [];
+        const strutMeshes = [];
+
+        for (let i = 0; i < NUM_RIBS; i++) {
+            // 主骨：CylinderGeometry(r, r, length) → Y方向に長さRIB_LEN
+            const ribGeo = new THREE.CylinderGeometry(1.2, 1.0, RIB_LEN, 8);
+            const rib = new THREE.Mesh(ribGeo, matRib);
+            rib.castShadow = true;
+            scene.add(rib);
+            ribMeshes.push(rib);
+
+            // ストラット：高さ1のcylinder → scale.yで長さを調整
+            const strutGeo = new THREE.CylinderGeometry(0.9, 0.9, BASE_STRUT_H, 8);
+            const strut = new THREE.Mesh(strutGeo, matStrut);
+            strut.castShadow = true;
+            scene.add(strut);
+            strutMeshes.push(strut);
+        }
+
+        // =============================================
+        // 6. 傘布パネル（BufferGeometry）
+        // =============================================
+        const fabricMeshes = [];
+        for (let i = 0; i < NUM_RIBS; i++) {
+            // 各パネル = 4三角形（扇を細かく）
+            const geo = new THREE.BufferGeometry();
+            const pos = new Float32Array(4 * 3 * 3); // 4 tris × 3 verts × 3 coords
+            geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+            const mesh = new THREE.Mesh(geo, matFabric);
+            scene.add(mesh);
+            fabricMeshes.push(mesh);
+        }
+
+        // =============================================
+        // 7. 傘を openRatio [0=閉, 1=開] で更新する関数
+        // =============================================
+        function updateUmbrella(openRatio) {
+            const ribAngle  = CLOSED_ANGLE + (OPEN_ANGLE - CLOSED_ANGLE) * openRatio;
+            const runnerY   = RUNNER_CLOSED_Y + (RUNNER_OPEN_Y - RUNNER_CLOSED_Y) * openRatio;
+            const sag       = 6 * openRatio; // 傘布の先端が少しだけ下がるカーブ
+
+            // ランナー位置を更新
+            runner.position.y = runnerY;
+
+            for (let i = 0; i < NUM_RIBS; i++) {
+                const phi     = (i / NUM_RIBS) * Math.PI * 2;
+                const phiNext = ((i + 1) / NUM_RIBS) * Math.PI * 2;
+
+                // --- 主骨の先端位置（クラウン基点） ---
+                // 骨は垂直下向きからribAngle傾く（0=真下, π/2=水平）
+                const tipX = Math.sin(phi) * RIB_LEN * Math.sin(ribAngle);
+                const tipY = CROWN_Y      - RIB_LEN * Math.cos(ribAngle);
+                const tipZ = Math.cos(phi) * RIB_LEN * Math.sin(ribAngle);
+
+                // 主骨の中点（geometryの中心をここに置く）
+                const ribMidX = tipX * 0.5;
+                const ribMidY = (CROWN_Y + tipY) * 0.5;
+                const ribMidZ = tipZ * 0.5;
+
+                // 主骨の向き（クラウン→先端ベクトル）
+                const ribDir = new THREE.Vector3(tipX, tipY - CROWN_Y, tipZ).normalize();
+                const ribQ   = new THREE.Quaternion().setFromUnitVectors(Y_UP, ribDir);
+
+                ribMeshes[i].position.set(ribMidX, ribMidY, ribMidZ);
+                ribMeshes[i].quaternion.copy(ribQ);
+
+                // --- ストラット（補助骨）---
+                // 主骨上のアタッチポイント
+                const aX = tipX * STRUT_ATTACH;
+                const aY = CROWN_Y + (tipY - CROWN_Y) * STRUT_ATTACH;
+                const aZ = tipZ * STRUT_ATTACH;
+
+                // ランナー側の基点（シャフトから少し外側）
+                const rX = Math.sin(phi) * 2.5;
+                const rY = runnerY;
+                const rZ = Math.cos(phi) * 2.5;
+
+                // ストラットの長さと向き
+                const dx = aX - rX, dy = aY - rY, dz = aZ - rZ;
+                const strutLen = Math.sqrt(dx * dx + dy * dy + dz * dz);
+                const strutDir = new THREE.Vector3(dx, dy, dz).normalize();
+                const strutQ   = new THREE.Quaternion().setFromUnitVectors(Y_UP, strutDir);
+
+                strutMeshes[i].position.set((rX + aX) * 0.5, (rY + aY) * 0.5, (rZ + aZ) * 0.5);
+                strutMeshes[i].quaternion.copy(strutQ);
+                strutMeshes[i].scale.set(1, strutLen / BASE_STRUT_H, 1);
+
+                // --- 傘布パネル（隣の骨i+1との間） ---
+                const tip2X = Math.sin(phiNext) * RIB_LEN * Math.sin(ribAngle);
+                const tip2Y = CROWN_Y           - RIB_LEN * Math.cos(ribAngle);
+                const tip2Z = Math.cos(phiNext) * RIB_LEN * Math.sin(ribAngle);
+
+                // 扇の中間ポイント（外周弧の中点、少し下にサグ）
+                const phiMid = phi + Math.PI / NUM_RIBS;
+                const arcX = Math.sin(phiMid) * RIB_LEN * Math.sin(ribAngle);
+                const arcY = CROWN_Y - RIB_LEN * Math.cos(ribAngle) - sag;
+                const arcZ = Math.cos(phiMid) * RIB_LEN * Math.sin(ribAngle);
+
+                // 内側中間点（クラウンと外周弧の中間）
+                const innX = arcX * 0.5;
+                const innY = (CROWN_Y + arcY) * 0.5;
+                const innZ = arcZ * 0.5;
+
+                // 4三角形で扇形パネルを構成
+                const pos = fabricMeshes[i].geometry.attributes.position.array;
+                let k = 0;
+                const setTri = (ax,ay,az, bx,by,bz, cx,cy,cz) => {
+                    pos[k++]=ax; pos[k++]=ay; pos[k++]=az;
+                    pos[k++]=bx; pos[k++]=by; pos[k++]=bz;
+                    pos[k++]=cx; pos[k++]=cy; pos[k++]=cz;
+                };
+                // tri1: crown → tip1 → inner
+                setTri(0, CROWN_Y, 0,   tipX, tipY, tipZ,   innX, innY, innZ);
+                // tri2: crown → inner → arc
+                setTri(0, CROWN_Y, 0,   innX, innY, innZ,   arcX, arcY, arcZ);
+                // tri3: crown → arc → inner2
+                const inn2X = (tip2X + arcX) * 0.5 * 0.5 + 0; // approximate
+                const inn2Y = (tip2Y + arcY) * 0.5 * 0.5 + CROWN_Y * 0.5 * 0;
+                // simplified inner2
+                setTri(0, CROWN_Y, 0,   arcX, arcY, arcZ,   (arcX+tip2X)*0.5, (arcY+tip2Y)*0.5 - sag*0.3, (arcZ+tip2Z)*0.5);
+                // tri4: crown → mid2 → tip2
+                setTri(0, CROWN_Y, 0,   (arcX+tip2X)*0.5, (arcY+tip2Y)*0.5 - sag*0.3, (arcZ+tip2Z)*0.5,   tip2X, tip2Y, tip2Z);
+
+                fabricMeshes[i].geometry.attributes.position.needsUpdate = true;
+                fabricMeshes[i].geometry.computeVertexNormals();
+            }
+        }
+
+        // 初期状態（閉じた状態）
+        updateUmbrella(0);
+
+        // =============================================
+        // 8. アニメーション制御
+        // =============================================
+        let isAuto    = true;
+        let openRatio = 0;
+        let animDir   = 1;    // 1=開く, -1=閉じる
+        let waitFrames = 0;
+
+        const btnAuto   = document.getElementById('btn-auto');
+        const btnManual = document.getElementById('btn-manual');
+        const manualDiv = document.getElementById('manual-controls');
+        const slider    = document.getElementById('openSlider');
+
+        btnAuto.addEventListener('click', () => {
+            isAuto = true;
+            btnAuto.classList.remove('dimmed');
+            btnManual.classList.add('dimmed');
+            manualDiv.style.display = 'none';
+        });
+
+        btnManual.addEventListener('click', () => {
+            isAuto = false;
+            btnManual.classList.remove('dimmed');
+            btnAuto.classList.add('dimmed');
+            manualDiv.style.display = 'block';
+            slider.value = Math.round(openRatio * 100);
+        });
+
+        slider.addEventListener('input', (e) => {
+            if (!isAuto) {
+                openRatio = parseFloat(e.target.value) / 100;
+                updateUmbrella(openRatio);
+            }
+        });
+
+        document.getElementById('loading').style.display = 'none';
+
+        // =============================================
+        // 9. レンダーループ
+        // =============================================
+        function renderLoop() {
+            requestAnimationFrame(renderLoop);
+            controls.update();
+
+            if (isAuto) {
+                if (waitFrames > 0) {
+                    waitFrames--;
+                } else {
+                    openRatio += animDir * 0.007;
+                    if (openRatio >= 1.0) {
+                        openRatio = 1.0;
+                        animDir = -1;
+                        waitFrames = 90;
+                    } else if (openRatio <= 0.0) {
+                        openRatio = 0.0;
+                        animDir = 1;
+                        waitFrames = 50;
+                    }
+                    updateUmbrella(openRatio);
+                }
+            }
+
+            renderer.render(scene, camera);
+        }
+        renderLoop();
+
+        window.addEventListener('resize', () => {
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+        });
+    });
     </script>
 </body>
 </html>
